@@ -13,6 +13,7 @@ const ServicePage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [categoryNames, setCategoryNames] = useState([]);
     const [typeNames, setTypeNames] = useState([]);
+    const [locationNames, setLocationNames] = useState([]);
     const [category, setCategory] = useState('');
     const [type, setType] = useState('');
     const [location, setLocation] = useState('');
@@ -62,6 +63,20 @@ const ServicePage = () => {
             }
         };
         getTypes();
+    }, []);
+
+    // Fetch and sort location names from the server
+    useEffect(() => {
+        const getLocation = async () => {
+            try {
+                const res = await axios.get("http://localhost:5200/location");
+                const sortedLocationNames = res.data.data.sort((a, b) => a.name.localeCompare(b.name));
+                setLocationNames(sortedLocationNames);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        getLocation();
     }, []);
 
     // Read filter values from URL query parameters
@@ -116,8 +131,7 @@ const ServicePage = () => {
 
     // Handler for opening the modal with the selected service
     const handleCardClick = (service) => {
-        setSelectedService(service);
-        setIsModalOpen(true);
+        navigate(`/services/${service._id}`);
     };
 
     // Handler for closing the modal
@@ -185,7 +199,14 @@ const ServicePage = () => {
                     </select>
                     
                     {/* Location filter input */}
-                    {/* <input type="text" placeholder="Location" onChange={(e) => setLocation(e.target.value)} value={location} className="p-2 border border-gray-300 rounded" /> */}
+                    <select onChange={(e) => setLocation(e.target.value)} value={location} className="mb-2 sm:mb-0 sm:mr-4 p-2 border border-gray-300 rounded">
+                        <option value="">Select Location</option>
+                        {locationNames.map(location => (
+                            <option value={location.name} key={location._id}>
+                                {location.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
                 <hr className="mb-8" />
                 {/* Display loading state or filtered services */}

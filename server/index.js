@@ -7,6 +7,7 @@ import serviceRoute from './routes/serviceRoutes.js'
 import categoryRoute from './routes/categoryRoutes.js'
 import mediaRoute from './routes/mediaRoutes.js'
 import typeRoute from './routes/typeRoutes.js'
+import locationRoute from './routes/locationRoutes.js';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -43,6 +44,7 @@ app.use('/service', serviceRoute);
 app.use('/category', categoryRoute);
 app.use('/media', mediaRoute);
 app.use('/type', typeRoute);
+app.use('/location', locationRoute);
 
 
 

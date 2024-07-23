@@ -53,7 +53,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-//route to get a book by id
+//route to get a service by id
 router.get('/:id', async (req, res) => {
     try {
         const {id} = req.params;

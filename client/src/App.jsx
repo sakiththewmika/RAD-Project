@@ -5,6 +5,7 @@ import Home from './pages/Home.jsx'
 import RegisterUser from './pages/RegisterUser.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import ServicePage from './pages/ServicePage.jsx'
+import ServiceDetails from './pages/ServiceDetails.jsx'
 
 const App = () => {
     return (
@@ -13,6 +14,7 @@ const App = () => {
             <Route path="/register" element={<RegisterUser />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/services" element={<ServicePage />} />
+            <Route path="/services/:id" element={<ServiceDetails />} />
         </Routes>
     );
 }
