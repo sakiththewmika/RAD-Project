@@ -38,6 +38,11 @@ const userSchema = new mongoose.Schema(
             required: true,
             enum: ["admin", "planner", "provider"],
         },
+        profilePhoto: {
+            type: String,
+            required: false,
+        }
+        
     },
     {
         timestamps: true,

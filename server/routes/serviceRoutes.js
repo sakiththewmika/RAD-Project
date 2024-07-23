@@ -3,26 +3,31 @@ import Service from '../models/serviceModel.js';
 
 const router = express.Router();
 
-//route to save a new user
+//route to save a new service
 router.post('/', async (req, res) => {
     try {
         if(
-            !req.body._id ||
             !req.body.userID ||
-            !req.body.categoryID ||
+            !req.body.category ||
             !req.body.description ||
-            !req.body.package_title ||
-            !req.body.price
+            !req.body.title ||
+            !req.body.type ||
+            !req.body.price 
         ) {
             return res.status(400).send({message: 'All fields are required'});
         }
         const newService = {
-            _id: req.body._id,
-            usrID: req.body.usrID,
-            categoryID: req.body.categoryID,
+            userID: req.body.userID,
+            category: req.body.category,
             description: req.body.description,
-            package_title: req.body.package_title,
+            title: req.body.title,
+            type: req.body.type,
+            address: req.body.address,
+            email: req.body.email,
+            mobile: req.body.mobile,
+            phone: req.body.phone,
             price: req.body.price,
+            images: req.body.images,
         };
         const createdService = await Service.create(newService);
         return res.status(201).send(createdService);

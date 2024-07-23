@@ -1,41 +1,76 @@
 import express from 'express';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import multer from 'multer';
 import User from '../models/userModel.js';
 
 const router = express.Router();
 
-//route to save a new user
-router.post('/register', async (req, res) => {
+// Multer configuration
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/'); // Uploads folder
+    },
+    filename: function (req, file, cb) {
+        cb(null, new Date().toISOString().replace(/:/g, '-') + '-' + file.originalname); // Unique filename
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    // Accept only jpeg and png files
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+        cb(null, true);
+    } else {
+        cb(new Error('File type not supported'), false);
+    }
+};
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 5 // 5MB max file size
+    },
+    fileFilter: fileFilter
+});
+
+router.use('/uploads', express.static(`${__dirname}/uploads`));
+
+// route to save a new user
+router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     try {
-        if(
-            !req.body.firstName ||
-            !req.body.lastName ||
-            !req.body.email ||
-            !req.body.password ||
-            !req.body.mobile ||
-            !req.body.role
-        ) {
-            return res.status(400).send({message: 'All fields are required'});
-        }
-        const user = await User.findOne({email: req.body.email});
-        if(user){
-            return res.status(409).send({message: 'User already exists'});
+        console.log('Request body:', req.body);
+        console.log('Uploaded file:', req.file);
+
+        const { firstName, lastName, email, password, mobile, role } = req.body;
+
+        if (!firstName || !lastName || !email || !password || !mobile || !role) {
+            return res.status(400).send({ message: 'All fields are required' });
         }
 
-        const newUser = {
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            email: req.body.email,
-            password: req.body.password,
-            mobile: req.body.mobile,
-            role: req.body.role,
-        };
-        const createdUser = await User.create(newUser);
-        console.log('created user' , createdUser);   
-        return res.status(201).send(createdUser);
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(409).send({ message: 'User already exists' });
+        }
 
+        const newUser = new User({
+            firstName,
+            lastName,
+            email,
+            password,
+            mobile,
+            role,
+            profilePhoto: req.file.path // Save file path
+        });
+
+        await newUser.save();
+
+        res.status(201).send({ message: 'User registered successfully' });
     } catch (error) {
-        console.error('Error creating user' , error);
-        res.status(500).send({message: error.message});
+        console.error(error);
+        res.status(500).send({ message: 'Error registering user', error });
     }
 });
 
