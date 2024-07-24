@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Header from "../components/Header";
-import ServiceModal from "../components/ServiceModal";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -9,8 +7,6 @@ const ServicePage = () => {
     const [services, setServices] = useState([]);
     const [filteredServices, setFilteredServices] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [selectedService, setSelectedService] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [categoryNames, setCategoryNames] = useState([]);
     const [typeNames, setTypeNames] = useState([]);
     const [locationNames, setLocationNames] = useState([]);
@@ -115,29 +111,9 @@ const ServicePage = () => {
         setFilteredServices(filtered);
     }, [category, type, location, services]);
 
-    // Prevent scrolling when modal is open
-    useEffect(() => {
-        if (isModalOpen) {
-            document.body.classList.add("overflow-hidden");
-        } else {
-            document.body.classList.remove("overflow-hidden");
-        }
-
-        // Cleanup on unmount or when modal state changes
-        return () => {
-            document.body.classList.remove("overflow-hidden");
-        };
-    }, [isModalOpen]);
-
-    // Handler for opening the modal with the selected service
+    // Handler for opening the detail page with the selected service
     const handleCardClick = (service) => {
         navigate(`/services/${service._id}`);
-    };
-
-    // Handler for closing the modal
-    const closeModal = () => {
-        setSelectedService(null);
-        setIsModalOpen(false);
     };
 
     // Render services grouped by category
@@ -154,13 +130,13 @@ const ServicePage = () => {
                     {serviceGroup.map((service) => (
                         <div className="p-4 w-full sm:w-1/2 md:w-1/3 lg:w-1/4" key={service._id}>
                             <a
-                                className="block p-4 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 hover:cursor-pointer"
+                                className="block p-4 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg hover:bg-gray-100 hover:cursor-pointer"
                                 onClick={() => handleCardClick(service)}
                             >
                                 <div className="aspect-w-4 aspect-h-3 mb-4">
                                     <img src={service.images[0]} alt="poster" className='w-full h-full object-cover rounded' />
                                 </div>
-                                <div className="h-32">
+                                <div className="h-28">
                                     <h5 className="text-xl font-bold tracking-tight text-gray-900">{service.title}</h5>
                                     <p className="font-normal text-gray-700">Location : {service.address}</p>
                                     <p className="font-normal text-gray-700">Price : {service.price}</p>
@@ -174,8 +150,7 @@ const ServicePage = () => {
     };
 
     return (
-        <div className="p-4">
-            <Header />
+        <div className="p-8">
             <div className="mt-16">
                 <div className="mb-4 flex flex-col sm:flex-row">
                     {/* Category filter dropdown */}
@@ -217,14 +192,9 @@ const ServicePage = () => {
                         {categoryNames.map(category => renderServiceGroup(category))}
                     </>
                 )}
-                {/* Display service modal if open */}
-                {isModalOpen && selectedService && (
-                    <div className="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 backdrop-blur-sm flex justify-center items-center p-4">
-                        <ServiceModal service={selectedService} onClose={closeModal} />
-                    </div>
-                )}
             </div>
         </div>
+        
     );
 };
 

@@ -85,15 +85,14 @@ const Home = () => {
 
     return (
         <div className="mt-16 relative p-4">
-            <Header />
             <h1 className="text-3xl my-4">Home Page</h1>
             <p className="text-xl">
                 Welcome to EventEase! The best platform to manage your events.
             </p>
             <div className="my-4">
-                <Link to="/register" className="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700">Register</Link>
-                <Link to="/login" className="bg-teal-700 text-white px-4 py-2 rounded-md hover:bg-teal-800 ml-4">Login</Link>
-                <Link to="/provider" className="bg-teal-800 text-white px-4 py-2 rounded-md hover:bg-teal-900 ml-4">Provider</Link>
+                <Link to="/register" className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700">Register</Link>
+                <Link to="/login" className="bg-teal-700 text-white px-4 py-2 rounded-lg hover:bg-teal-800 ml-4">Login</Link>
+                <Link to="/provider" className="bg-teal-800 text-white px-4 py-2 rounded-lg hover:bg-teal-900 ml-4">Provider</Link>
             </div>
             {loading ? (
                 <p>Loading...</p>

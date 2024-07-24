@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 const ServiceDetails = () => {
     const { id } = useParams(); // Get the service ID from the URL
@@ -31,8 +32,7 @@ const ServiceDetails = () => {
     }
 
     return (
-        <div className="p-4">
-            <Header />
+        <div className="p-8">
             <div className="mt-16">
                 <h1 className="text-4xl font-bold mb-4">{service.title}</h1>
                 <div className="flex flex-wrap">
