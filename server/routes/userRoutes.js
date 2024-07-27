@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import multer from 'multer';
 import User from '../models/userModel.js';
+import auth from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -38,21 +39,18 @@ const upload = multer({
 
 router.use('/uploads', express.static(`${__dirname}/uploads`));
 
-// route to save a new user
+// Route to register a new user
 router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     try {
-        console.log('Request body:', req.body);
-        console.log('Uploaded file:', req.file);
-
         const { firstName, lastName, email, password, mobile, role } = req.body;
 
         if (!firstName || !lastName || !email || !password || !mobile || !role) {
-            return res.status(400).send({ message: 'All fields are required' });
+            return res.status(400).json({ message: 'All fields are required' });
         }
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return res.status(409).send({ message: 'User already exists' });
+            return res.status(409).json({ message: 'User already exists' });
         }
 
         const newUser = new User({
@@ -62,30 +60,51 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
             password,
             mobile,
             role,
-            profilePhoto: req.file.path // Save file path
+            profilePhoto: req.file ? req.file.path : null // Save file path if uploaded
         });
 
         await newUser.save();
 
-        res.status(201).send({ message: 'User registered successfully' });
+        res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
         console.error(error);
-        res.status(500).send({ message: 'Error registering user', error });
+        res.status(500).json({ message: 'Error registering user', error });
     }
 });
 
-//route to get all users
+// Route to get all users
 router.get('/', async (req, res) => {
     try {
-        const Users = await User.find();
-        return res.status(200).send({
-            count : Users.length,
-            data : Users
+        const users = await User.find();
+        res.status(200).json({
+            count: users.length,
+            data: users
         });
-
     } catch (error) {
-        console.log(error.message);
-        res.status(500).send({message: error.message});
+        console.error(error.message);
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Route to get user details for profile
+router.get('/profile', auth, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json({
+            _id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            mobile: user.mobile,
+            role: user.role,
+            profilePhoto: user.profilePhoto
+        });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ message: error.message });
     }
 });
 

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");
@@ -8,31 +9,22 @@ const LoginPage = () => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const { login } = useAuth();
 
-    const handleLogin = () => {
+    const handleLogin = async () => {
         if (!email || !password) {
             setError("Email and password are required");
             return;
         }
 
-        const credentials = { email, password };
         setLoading(true);
-        axios
-            .post("http://localhost:5200/login", credentials)
-            .then((res) => {
-                setLoading(false);
-                // localStorage.setItem("user", JSON.stringify(res.data));
-                localStorage.setItem("token", res.data.token);//store token in local storage
-                navigate("/");
-            })
-            .catch((err) => {
-                setLoading(false);
-                if (err.response) {
-                    setError(err.response.data.message || "Login failed");
-                } else {
-                    setError("An error occurred. Please try again later.");
-                }
-            });
+        try {
+            await login(email, password);
+            navigate("/profile");
+        } catch (err) {
+            setLoading(false);
+            setError(err.response?.data?.message || "Login failed");
+        }
     };
 
     return (
@@ -45,7 +37,7 @@ const LoginPage = () => {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="border-2 border-gray-500 px-4 py-2 w-full"
+                        className="border-2 border-teal-500 px-4 py-2 w-full"
                     />
                 </div>
                 <div className="my-4">
@@ -54,7 +46,7 @@ const LoginPage = () => {
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="border-2 border-gray-500 px-4 py-2 w-full"
+                        className="border-2 border-teal-500 px-4 py-2 w-full"
                     />
                 </div>
                 <button

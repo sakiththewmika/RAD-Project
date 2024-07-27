@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
-import Header from "../components/Header";
-import Modal from "../components/Modal";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import Modal from "../components/Modal";
+import { useAuth } from "../context/AuthContext";
 
 const Home = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedUser, setSelectedUser] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const navigate = useNavigate();
+    const { user, logout } = useAuth();
 
-    // Fetch users from the server
     useEffect(() => {
         setLoading(true);
         axios
@@ -25,7 +26,15 @@ const Home = () => {
             });
     }, []);
 
-    // Prevent scrolling when modal is open
+    const handleLogout = async () => {
+        try {
+            await logout();
+            navigate('/login');
+        } catch (err) {
+            console.error('Logout failed', err);
+        }
+    };
+
     useEffect(() => {
         if (isModalOpen) {
             document.body.classList.add("overflow-hidden");
@@ -38,29 +47,21 @@ const Home = () => {
         };
     }, [isModalOpen]);
 
-    // Group users by role
-    const groupUsersByRole = (role) => {
-        return users.filter(user => user.role === role);
-    };
+    const groupUsersByRole = (role) => users.filter(user => user.role === role);
 
-    // Handle card click
     const handleCardClick = (user) => {
         setSelectedUser(user);
         setIsModalOpen(true);
     };
 
-    // Close modal
     const closeModal = () => {
         setSelectedUser(null);
         setIsModalOpen(false);
     };
 
-    // Render user group
     const renderUserGroup = (role) => {
         const userGroup = groupUsersByRole(role);
-        if (userGroup.length === 0) {
-            return null;
-        }
+        if (userGroup.length === 0) return null;
 
         return (
             <div className="mb-8">
@@ -70,7 +71,7 @@ const Home = () => {
                         <div key={user._id} className="m-4">
                             <a
                                 onClick={() => handleCardClick(user)}
-                                className="block  min-w-80 p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 hover:cursor-pointer"
+                                className="block min-w-80 p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 hover:cursor-pointer"
                             >
                                 <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900">{user.firstName} {user.lastName}</h5>
                                 <p className="font-normal text-gray-700">Email: {user.email}</p>
@@ -91,8 +92,15 @@ const Home = () => {
             </p>
             <div className="my-4">
                 <Link to="/register" className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700">Register</Link>
-                <Link to="/login" className="bg-teal-700 text-white px-4 py-2 rounded-lg hover:bg-teal-800 ml-4">Login</Link>
-                <Link to="/provider" className="bg-teal-800 text-white px-4 py-2 rounded-lg hover:bg-teal-900 ml-4">Provider</Link>
+                <Link to="/services" className="bg-teal-800 text-white px-4 py-2 rounded-lg hover:bg-teal-900 ml-4">Provider</Link>
+                {user ? (
+                    <>
+                        <Link to="/profile" className="bg-teal-900 text-white px-4 py-2 rounded-lg hover:bg-teal-900 ml-4">Profile</Link>
+                        <button onClick={handleLogout} className="bg-teal-800 text-white px-4 py-2 rounded-lg hover:bg-teal-900 ml-4">Logout</button>
+                    </>
+                ) : (
+                    <Link to="/login" className="bg-teal-700 text-white px-4 py-2 rounded-lg hover:bg-teal-800 ml-4">Login</Link>
+                )}
             </div>
             {loading ? (
                 <p>Loading...</p>
@@ -104,7 +112,7 @@ const Home = () => {
                 </>
             )}
             {isModalOpen && selectedUser && (
-                <div className="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 backdrop-blur-sm" >
+                <div className="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 backdrop-blur-sm">
                     <Modal user={selectedUser} onClose={closeModal} />
                 </div>
             )}
