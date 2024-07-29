@@ -11,6 +11,7 @@ const Header = () => {
 
     const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
     const handleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+    const handleDropdownItemClick = () => setIsDropdownOpen(false);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -48,30 +49,28 @@ const Header = () => {
                                 <span className="sr-only">Open user menu</span>
                                 <img className="w-12 h-12 rounded-full" src={`http://localhost:5200/${user.profilePhoto}`} alt="user photo" />
                             </button>
-                            <div ref={dropdownRef} className={`z-50 ${isDropdownOpen ? 'block' : 'hidden'} absolute right-0 top-full mt-2 w-fit origin-top-right rounded-md shadow-lg bg-gray-100 divide-y divide-gray-100`} id="user-dropdown">
+                            <div ref={dropdownRef} className={`z-50 ${isDropdownOpen ? 'block' : 'hidden'} absolute right-0 top-full mt-2 w-fit origin-top-right rounded-lg shadow-lg bg-gray-100 divide-y divide-gray-300`} id="user-dropdown">
                                 <div className="px-4 py-3">
                                     <span className="block text-sm text-gray-800">{user.firstName} {user.lastName}</span>
                                     <span className="block text-sm text-gray-500 truncate">{user.email}</span>
                                 </div>
                                 <ul className="py-1" aria-labelledby="user-menu-button">
                                     <li>
-                                        <Link to="/profile" className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-200">Profile</Link>
+                                        <Link to="/profile" className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-200" onClick={handleDropdownItemClick}>Profile</Link>
                                     </li>
                                     <li>
-                                        <Link to="/settings" className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-200">Settings</Link>
+                                        <Link to="/settings" className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-200" onClick={handleDropdownItemClick}>Settings</Link>
                                     </li>
-                                    <li>
-                                        <Link to="/earnings" className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-200">Earnings</Link>
-                                    </li>
-                                    <li>
-                                        <button
-                                            onClick={logout}
-                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200"
+                                </ul>
+                                <button
+                                            onClick={() => {
+                                                logout();
+                                                handleDropdownItemClick();
+                                            }}
+                                            className="block px-4 py-2 text-sm text-gray-700 rounded-b-lg hover:bg-gray-200 w-full"
                                         >
                                             Sign out
                                         </button>
-                                    </li>
-                                </ul>
                             </div>
                         </div>
                     ) : (

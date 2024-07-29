@@ -93,6 +93,7 @@ const Home = () => {
             <div className="my-4">
                 <Link to="/register" className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700">Register</Link>
                 <Link to="/services" className="bg-teal-800 text-white px-4 py-2 rounded-lg hover:bg-teal-900 ml-4">Provider</Link>
+                <Link to="/admin" className="bg-teal-700 text-white px-4 py-2 rounded-lg hover:bg-teal-800 ml-4">Admin Dashboard</Link>
                 {user ? (
                     <>
                         <Link to="/profile" className="bg-teal-900 text-white px-4 py-2 rounded-lg hover:bg-teal-900 ml-4">Profile</Link>

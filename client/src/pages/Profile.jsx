@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 
 const Profile = () => {
-    const [user, setUser] = useState(null);
-
-    useEffect(() => {
-        axios
-            .get('http://localhost:5200/user/profile', { withCredentials: true })
-            .then((res) => setUser(res.data))
-            .catch((err) => console.error(err));
-    }, []);
+    const {user} = useAuth();
 
     return (
         <div className="p-16 mt-16">
