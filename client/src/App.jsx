@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage';
 import ServicePage from './pages/ServicePage';
 import ServiceDetails from './pages/ServiceDetails';
 import Profile from './pages/Profile';
+import AdminDashboard from './pages/AdminDashboard';
 import { AuthProvider } from './context/AuthContext';
 
 const App = () => {
@@ -26,6 +27,7 @@ const App = () => {
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/services" element={<ServicePage />} />
                         <Route path="/services/:id" element={<ServiceDetails />} />
+                        <Route path="/admin" element={<AdminDashboard />} />
                     </Routes>
                 </div>
                 {!hideHeaderFooter && <Footer />}
