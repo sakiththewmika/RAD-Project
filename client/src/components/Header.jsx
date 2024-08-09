@@ -112,7 +112,7 @@ const Header = () => {
                         </li>
                         <li>
                             <Link to="/contact" className={`block text-lg py-2 px-3 rounded md:p-0 ${location.pathname === '/contact' ? 'bg-gray-300 md:bg-transparent md:text-teal-700' : ' text-gray-900 hover:bg-gray-200 md:hover:bg-transparent md:hover:text-teal-700'}`} aria-current={location.pathname === '/contact' ? 'contact page' : undefined}>
-                                Contact
+                                ConCat
                             </Link>
                         </li>
                     </ul>
