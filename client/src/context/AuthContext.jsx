@@ -25,6 +25,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const login = async (email, password) => {
+        // eslint-disable-next-line no-useless-catch
         try {
             const res = await axios.post("http://localhost:5200/login", { email, password }, { withCredentials: true });
             setUser(res.data);

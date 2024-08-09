@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-//route to get all clocations
+//route to get all locations
 router.get('/', async (req, res) => {
     try {
         const locations = await Location.find();
