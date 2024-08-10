@@ -10,7 +10,8 @@ import ServiceDetails from './pages/ServiceDetails';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
 import { AuthProvider } from './context/AuthContext';
-
+import NavBar from './components/NavBar';
+import LandingPage from './pages/HeroSection';
 const App = () => {
     const location = useLocation();
     const hideHeaderFooter = location.pathname === '/login' || location.pathname === '/register';
@@ -18,8 +19,10 @@ const App = () => {
     return (
         <AuthProvider>
             <div className="flex flex-col min-h-screen">
-                {!hideHeaderFooter && <Header />}
-                <div className="flex-grow">
+                
+                {/* {!hideHeaderFooter && <Header />} */}
+                <LandingPage/>
+                {/* <div className="flex-grow">
                     <Routes>
                         <Route path="/" element={<Home />} />
                         <Route path="/register" element={<RegisterUser />} />
@@ -30,7 +33,7 @@ const App = () => {
                         <Route path="/admin" element={<AdminDashboard />} />
                     </Routes>
                 </div>
-                {!hideHeaderFooter && <Footer />}
+                {!hideHeaderFooter && <Footer />} */}
             </div>
         </AuthProvider>
     );
