@@ -38,6 +38,7 @@ const App = () => {
                         </Routes>
                     </div>
                     {!hideHeaderFooter && <Footer />}
+
                 </div>
             </SnackbarProvider>
         </AuthProvider>

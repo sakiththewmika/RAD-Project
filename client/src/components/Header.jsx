@@ -89,6 +89,7 @@ const Header = () => {
                                 >
                                     Sign out
                                 </button>
+
                             </div>
                         </div>
                     ) : (
