@@ -178,7 +178,7 @@ const PlannerDashboard = () => {
                 </div>
             )}
             
-
+  {/* Displaying my reviews */}
     <div className='p-4'>
        <h1 className='text-3xl my-8'>My Reviews</h1>
       <div className='flex justify-between items-center'>
@@ -199,7 +199,7 @@ const PlannerDashboard = () => {
                       <div className="text-gray-600 dark:text-gray-400">
                         <div className="text-base font-normal">
                           <span className="font-medium text-gray-900 dark:text-white">
-                            {user.firstName} {user.lastName}
+                            {reviews.title} 
                           </span>{" "}
                         </div>
                         <div className="text-sm font-normal">

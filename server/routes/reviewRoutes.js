@@ -61,7 +61,7 @@ router.get('/service/:id',async(request,response)=>{
 router.get('/myReviews/:userID',async(req,res)=>{
     try {
         const {userID}=req.params;
-        const reviews=await Review.find({userID}).populate('comment','rating');
+        const reviews=await Review.find({userID}).populate('serviceID','title');
         return res.status(200).send({
             count:reviews.length,
             data:reviews
