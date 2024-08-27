@@ -8,7 +8,7 @@ class NavBar extends Component{
     }
     render(){
     return(
-        <>
+        <div>
         <nav>
             <div id='div1'>
             <a href=''><img src='./assets/icon.svg'/></a>
@@ -23,17 +23,21 @@ class NavBar extends Component{
                     
                 </ul>
             </div>
+            <div>
+            <i class="bi bi-bag-fill" id='bag' ></i>
+            </div>
             <div id='mobile' onClick={this.handleClick}>
                 <i id='bar'
                 className={this.state.clicked?"bi bi-x-lg":"bi bi-list"}>
 
                 </i>
                 
+                
             {/* <i className="bi bi-list"></i> */}
             {/* <i className="bi bi-x-lg"></i> */}
             </div>
         </nav>
-        </>
+        </div>
     )
 }
 }

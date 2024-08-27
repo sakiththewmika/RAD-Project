@@ -59,18 +59,18 @@ const Header = () => {
                                         <Link to="/profile" className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-200" onClick={handleDropdownItemClick}>Profile</Link>
                                     </li>
                                     <li>
-                                        <Link to="/settings" className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-200" onClick={handleDropdownItemClick}>Settings</Link>
+                                        <Link to="/dashboard" className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-200" onClick={handleDropdownItemClick}>Dashboard</Link>
                                     </li>
                                 </ul>
                                 <button
-                                            onClick={() => {
-                                                logout();
-                                                handleDropdownItemClick();
-                                            }}
-                                            className="block px-4 py-2 text-sm text-gray-700 rounded-b-lg hover:bg-gray-200 w-full"
-                                        >
-                                            Sign out
-                                        </button>
+                                    onClick={() => {
+                                        logout();
+                                        handleDropdownItemClick();
+                                    }}
+                                    className="block px-4 py-2 text-sm text-gray-700 rounded-b-lg hover:bg-gray-200 w-full"
+                                >
+                                    Sign out
+                                </button>
                             </div>
                         </div>
                     ) : (

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Modal from "../components/Modal";
 import { useAuth } from "../context/AuthContext";
-
+import HeroSection from './HeroSection';
 const Home = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -85,7 +85,8 @@ const Home = () => {
     };
 
     return (
-        <div className="mt-16 relative p-4">
+        <div className="relative p-4">
+            <HeroSection/>
             <h1 className="text-3xl my-4">Home Page</h1>
             <p className="text-xl">
                 Welcome to EventEase! The best platform to manage your events.
@@ -94,6 +95,9 @@ const Home = () => {
                 <Link to="/register" className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700">Register</Link>
                 <Link to="/services" className="bg-teal-800 text-white px-4 py-2 rounded-lg hover:bg-teal-900 ml-4">Provider</Link>
                 <Link to="/admin" className="bg-teal-700 text-white px-4 py-2 rounded-lg hover:bg-teal-800 ml-4">Admin Dashboard</Link>
+                <Link to="/provider" className="bg-teal-700 text-white px-4 py-2 rounded-lg hover:bg-teal-800 ml-4">Provider Dashboard</Link>
+                <Link to="/planner" className="bg-teal-700 text-white px-4 py-2 rounded-lg hover:bg-teal-800 ml-4">Planner Dashboard</Link>
+
                 {user ? (
                     <>
                         <Link to="/profile" className="bg-teal-900 text-white px-4 py-2 rounded-lg hover:bg-teal-900 ml-4">Profile</Link>
