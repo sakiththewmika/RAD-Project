@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Header = () => {
@@ -8,6 +8,7 @@ const Header = () => {
     const location = useLocation();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
+    const navigate = useNavigate();
 
     const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
     const handleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
@@ -26,9 +27,15 @@ const Header = () => {
         };
     }, [dropdownRef]);
 
+    const handleLogout = () => {
+        logout();
+        setIsDropdownOpen(false);
+        navigate("/");
+    };
+
     return (
-        <nav className="bg-gray-50 fixed w-full z-20 top-0 start-0 border-b border-gray-200">
-            <div className="max-w-screen-2xl flex flex-wrap items-center justify-between mx-8  p-4">
+        <nav className="bg-white/70 backdrop-blur-2xl sticky w-full z-20 top-0 start-0 border-b border-gray-200">
+            <div className="max-w-screen-2xl flex flex-wrap items-center justify-between mx-8 p-4">
                 <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
                     <img src="/assets/icon.svg" className="h-8" alt="EventEase Logo" />
                     <span className="self-center text-3xl font-semibold whitespace-nowrap">EventEase</span>
@@ -59,13 +66,24 @@ const Header = () => {
                                         <Link to="/profile" className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-200" onClick={handleDropdownItemClick}>Profile</Link>
                                     </li>
                                     <li>
-                                        <Link to="/dashboard" className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-200" onClick={handleDropdownItemClick}>Dashboard</Link>
+                                        {user.role === "admin" && (
+                                        <Link to="/admin" className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-200" onClick={handleDropdownItemClick}>Admin Dashboard</Link>
+                                        )}
+                                    </li>
+                                    <li>
+                                        {user.role === "planner" && (
+                                        <Link to="/planner" className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-200" onClick={handleDropdownItemClick}>Planner Dashboard</Link>
+                                        )}
+                                    </li>
+                                    <li>
+                                        {user.role === "provider" && (
+                                        <Link to="/provider" className="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-200" onClick={handleDropdownItemClick}>Provider Dashboard</Link>
+                                        )}
                                     </li>
                                 </ul>
                                 <button
                                     onClick={() => {
-                                        logout();
-                                        handleDropdownItemClick();
+                                        handleLogout();
                                     }}
                                     className="block px-4 py-2 text-sm text-gray-700 rounded-b-lg hover:bg-gray-200 w-full"
                                 >
@@ -75,7 +93,7 @@ const Header = () => {
                         </div>
                     ) : (
                         <Link to="/login">
-                            <button type="button" className="text-yellow-400 bg-teal-700 hover:bg-teal-800 focus:ring-4 focus:outline-none focus:ring-teal-300 font-medium rounded-xl text-lg px-4 py-2 text-center">
+                            <button type="button" className="text-yellow-500 bg-[#0F766E] hover:bg-[#0E6C64] focus:ring-4 focus:outline-none focus:ring-teal-300 font-medium rounded-xl text-lg px-4 py-2 text-center">
                                 Get started
                             </button>
                         </Link>
@@ -93,25 +111,25 @@ const Header = () => {
                         </svg>
                     </button>
                 </div>
-                <div className={`items-center justify-between ${isNavCollapsed ? 'hidden' : 'flex'} w-full md:flex md:w-auto md:order-1`} id="navbar-sticky">
-                    <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg w-full bg-gray-100 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white">
+                <div className={`flex items-center justify-end ${isNavCollapsed ? 'hidden' : 'flex'} w-full md:flex md:w-auto md:order-1`}>
+                    <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg w-full md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:ml-auto">
                         <li>
-                            <Link to="/" className={`block text-lg py-2 px-3 rounded md:p-0 ${location.pathname === '/' ? 'bg-gray-300 md:bg-transparent md:text-teal-700' : ' text-gray-900 hover:bg-gray-200 md:hover:bg-transparent md:hover:text-teal-700'}`} aria-current={location.pathname === '/' ? 'home page' : undefined}>
+                            <Link to="/" onClick={handleNavCollapse} className={`block text-lg py-2 px-3 rounded md:p-0 ${location.pathname === '/' ? 'bg-teal-500 md:bg-transparent md:text-teal-700' : ' text-black hover:bg-teal-500/40 md:hover:bg-transparent md:bg-transparent md:hover:text-teal-700'}`} aria-current={location.pathname === '/' ? 'home page' : undefined}>
                                 Home
                             </Link>
                         </li>
                         <li>
-                            <Link to="/about" className={`block text-lg py-2 px-3 rounded md:p-0 ${location.pathname === '/about' ? 'bg-gray-300 md:bg-transparent md:text-teal-700' : ' text-gray-900 hover:bg-gray-200 md:hover:bg-transparent md:hover:text-teal-700'}`} aria-current={location.pathname === '/about' ? 'about page' : undefined}>
+                            <Link to="/about" onClick={handleNavCollapse} className={`block text-lg py-2 px-3 rounded md:p-0 ${location.pathname === '/about' ? 'bg-teal-500 md:bg-transparent md:text-teal-700' : ' text-black hover:bg-teal-500/40 md:hover:bg-transparent md:bg-transparent md:hover:text-teal-700'}`} aria-current={location.pathname === '/about' ? 'about page' : undefined}>
                                 About
                             </Link>
                         </li>
                         <li>
-                            <Link to="/services" className={`block text-lg py-2 px-3 rounded md:p-0 ${location.pathname === '/services' ? 'bg-gray-300 md:bg-transparent md:text-teal-700' : ' text-gray-900 hover:bg-gray-200 md:hover:bg-transparent md:hover:text-teal-700'}`} aria-current={location.pathname === '/services' ? 'services page' : undefined}>
+                            <Link to="/services" onClick={handleNavCollapse} className={`block text-lg py-2 px-3 rounded md:p-0 ${location.pathname === '/services' ? 'bg-teal-500 md:bg-transparent md:text-teal-700' : ' text-black hover:bg-teal-500/40 md:hover:bg-transparent md:bg-transparent md:hover:text-teal-700'}`} aria-current={location.pathname === '/services' ? 'services page' : undefined}>
                                 Services
                             </Link>
                         </li>
                         <li>
-                            <Link to="/contact" className={`block text-lg py-2 px-3 rounded md:p-0 ${location.pathname === '/contact' ? 'bg-gray-300 md:bg-transparent md:text-teal-700' : ' text-gray-900 hover:bg-gray-200 md:hover:bg-transparent md:hover:text-teal-700'}`} aria-current={location.pathname === '/contact' ? 'contact page' : undefined}>
+                            <Link to="/contact" onClick={handleNavCollapse} className={`block text-lg py-2 px-3 rounded md:p-0 ${location.pathname === '/contact' ? 'bg-teal-500 md:bg-transparent md:text-teal-700' : ' text-black hover:bg-teal-500/40 md:hover:bg-transparent md:bg-transparent md:hover:text-teal-700'}`} aria-current={location.pathname === '/contact' ? 'contact page' : undefined}>
                                 Contact
                             </Link>
                         </li>

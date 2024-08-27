@@ -6,13 +6,13 @@ const router = express.Router();
 // Route to login a user
 router.post('/', async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, role } = req.body;
 
-        if (!email || !password) {
+        if (!email || !password || !role) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
-        const { token, user } = await loginUser(email, password);
+        const { token, user } = await loginUser(email, password, role);
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production', // Set to true if using https
