@@ -3,12 +3,14 @@ import { useNavigate, Outlet, useParams } from "react-router-dom";
 import AddListModal from '../components/AddListModal';
 import EditListModal from '../components/EditListModal';
 import DeleteListModal from '../components/DeleteListModal';
+import StarRating from '../components/StarRating';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
 
 const PlannerDashboard = () => {
     const [lists, setLists] = useState([]);
+    const [reviews,setReviews]=useState([]);
     const [loading, setLoading] = useState(true);
     const [isAddListModalOpen, setIsAddListModalOpen] = useState(false);
     const [isEditListModalOpen, setIsEditListModalOpen] = useState(false);
@@ -39,6 +41,17 @@ const PlannerDashboard = () => {
     useEffect(() => {
         fetchLists();
     }, [user._id]);
+
+    useEffect(()=>{
+        axios
+          .get(`http://localhost:5200/review/myReviews/${user._id}`)
+          .then((response)=>{
+            setReviews(response.data.data);
+          })
+          .catch((error)=>{
+            console.log(error)
+          })
+      },[])
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -164,7 +177,47 @@ const PlannerDashboard = () => {
                     <DeleteListModal listID={selectedListID} onClose={closeDeleteModal} />
                 </div>
             )}
+            
+
+    <div className='p-4'>
+       <h1 className='text-3xl my-8'>My Reviews</h1>
+      <div className='flex justify-between items-center'>
+       
+        {/* <ReviewsTable reviews={reviews} /> */}
+        <div className="mt-5 w-full">
+        {reviews.map((review, index) => (
+              <div
+                className="mb-4 border border-gray-100 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700"
+                key={index}
+              >
+                <ol className="divide-y divider-gray-200 dark:divide-gray-700">
+                  <li>
+                    <a
+                      href="#"
+                      className="items-center block p-3 sm:flex hover:bg-gray-100 hover:rounded-lg dark:hover:bg-gray-700"
+                    >
+                      <div className="text-gray-600 dark:text-gray-400">
+                        <div className="text-base font-normal">
+                          <span className="font-medium text-gray-900 dark:text-white">
+                            {user.firstName} {user.lastName}
+                          </span>{" "}
+                        </div>
+                        <div className="text-sm font-normal">
+                          " {review.comment} "
+                        </div>
+                        <StarRating rating={review.rating} />
+                      </div>
+                    </a>
+                  </li>
+                </ol>
+              </div>
+            ))}
+        </div>    
+            
+      </div>
+    </div>
         </div>
+    
     );
 };
 

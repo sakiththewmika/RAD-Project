@@ -4,7 +4,7 @@ import axios from "axios";
 import Modal from "../components/Modal";
 import Editor from "../components/Editor";
 import { useAuth } from "../context/AuthContext";
-
+import HeroSection from './HeroSection';
 const Home = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -87,6 +87,7 @@ const Home = () => {
 
     return (
         <div className="relative p-8">
+            <HeroSection/>
             <h1 className="text-3xl my-4">Home Page</h1>
             <p className="text-xl">
                 Welcome to EventEase! The best platform to manage your events.
