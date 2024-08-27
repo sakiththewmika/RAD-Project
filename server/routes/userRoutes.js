@@ -43,14 +43,25 @@ router.use('/uploads', express.static(`${__dirname}/uploads`));
 router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     try {
         const { firstName, lastName, email, password, mobile, role } = req.body;
+        var lists = req.body.lists;
 
-        if (!firstName || !lastName || !email || !password || !mobile || !role) {
+        if (!firstName || !lastName || !email || !password || !role) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({ email, role });
         if (existingUser) {
-            return res.status(409).json({ message: 'User already exists' });
+            return res.status(409).json({ message: 'User with this email and role already exists' });
+        }
+
+
+        if (role === 'planner' && (!lists || lists.length === 0)) {
+            lists = [
+                {
+                    name: 'Favorites',
+                    items: []
+                }
+            ];
         }
 
         const newUser = new User({
@@ -60,7 +71,9 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
             password,
             mobile,
             role,
+            lists,
             profilePhoto: req.file ? req.file.path : null // Save file path if uploaded
+
         });
 
         await newUser.save();
@@ -98,7 +111,6 @@ router.get('/profile', auth, async (req, res) => {
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
-            mobile: user.mobile,
             role: user.role,
             profilePhoto: user.profilePhoto
         });
@@ -111,61 +123,117 @@ router.get('/profile', auth, async (req, res) => {
 //route to get a user by id
 router.get('/:id', async (req, res) => {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
         const user = await User.findById(id);
-        if(user) {
+        if (user) {
             return res.status(200).send(user);
         }
-        return res.status(404).send({message: 'User not found'});
+        return res.status(404).send({ message: 'User not found' });
 
     } catch (error) {
         console.log(error.message);
-        res.status(500).send({message: error.message});
+        res.status(500).send({ message: error.message });
     }
 });
 
 //route to update a user by id
 router.put('/:id', async (req, res) => {
-    try{
-        if(
+    try {
+        if (
             !req.body.firstName ||
             !req.body.lastName ||
             !req.body.email ||
-            !req.body.password ||
-            !req.body.mobile ||
             !req.body.role
         ) {
-            return res.status(400).send({message: 'All fields are required'});
+            return res.status(400).send({ message: 'All fields are required' });
         }
-        const {id} = req.params;
+        const { id } = req.params;
         const result = await User.findByIdAndUpdate(id, req.body);
 
-        if(!result){
-            return res.status(404).send({message: 'User not found'});
+        if (!result) {
+            return res.status(404).send({ message: 'User not found' });
         }
-        return res.status(200).send({message: 'User updated successfully'});
+        return res.status(200).send({ message: 'User updated successfully' });
 
-    }catch(error) {
+    } catch (error) {
         console.log(error.message);
-        res.status(500).send({message: error.message});
+        res.status(500).send({ message: error.message });
     }
 });
 
 //route to delete a user by id
 router.delete('/:id', async (req, res) => {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
         const result = await User.findByIdAndDelete(id);
 
-        if(!result){
-            return res.status(404).send({message: 'User not found'});
-        } 
-        return res.status(200).send({message: 'User deleted successfully'});
-        
+        if (!result) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+        return res.status(200).send({ message: 'User deleted successfully' });
+
     } catch (error) {
         console.log(error.message);
-        res.status(500).send({message: error.message});
+        res.status(500).send({ message: error.message });
     }
 });
+
+// //route to get all lists by userID with services
+// router.get('/lists/:userID', async (req, res) => {
+//     try {
+//         const { userID } = req.params;
+//         const user = await User.findById(userID);
+//         if (!user) {
+//             return res.status(404).send({ message: 'User not found' });
+//         }
+//         return res.status(200).send({
+//             count: user.lists.length,
+//             data: user.lists
+//         });
+//     } catch (error) {
+//         console.log(error.message);
+//         res.status(500).send({ message: error.message });
+//     }
+// });
+
+
+
+// //route to add list to user by userID
+// router.post('/lists/:userID', async (req, res) => {
+//     try {
+//         const { userID } = req.params;
+//         const user = await User.findById(userID);
+//         if (!user) {
+//             return res.status(404).send({ message: 'User not found' });
+//         }
+//         user.lists.push(req.body);
+//         await user.save();
+//         return res.status(200).send({ message: 'List added successfully' });
+//     } catch (error) {
+//         console.log(error.message);
+//         res.status(500).send({ message: error.message });
+//     }
+// });
+
+// //route to update list by id
+// router.put('/lists/:id', async (req, res) => {
+//     try {
+//         if (!req.body.name) {
+//             return res.status(400).send({ message: 'Name is required' });
+//         }
+//         const { id } = req.params;
+//         const user = await User.findOneAndUpdate(
+//             { 'lists._id': id },
+//             { $set: { 'lists.$.name': req.body.name } }
+//         );
+//         if (!user) {
+//             return res.status(404).send({ message: 'List not found' });
+//         }
+//         return res.status(200).send({ message: 'List updated successfully' });
+//     } catch (error) {
+//         console.log(error.message);
+//         res.status(500).send({ message: error.message });
+//     }
+// });
 
 export default router;

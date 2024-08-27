@@ -22,7 +22,6 @@ const Modal = ({ user, onClose }) => {
                 )}
                 <h2 className="text-3xl font-bold mb-4">{user.firstName} {user.lastName}</h2>
                 <p className="text-lg mb-2"><strong>Email:</strong> {user.email}</p>
-                <p className="text-lg mb-2"><strong>Mobile:</strong> {user.mobile}</p>
                 <p className="text-lg mb-2"><strong>Role:</strong> {user.role}</p>
                 <p className="text-lg"><strong>Created At:</strong> {new Date(user.createdAt).toLocaleString()}</p>
                 <p className="text-lg"><strong>Updated At:</strong> {new Date(user.updatedAt).toLocaleString()}</p>

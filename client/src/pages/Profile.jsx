@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from "../context/AuthContext";
 
 const Profile = () => {
     const {user} = useAuth();
@@ -24,6 +24,7 @@ const Profile = () => {
                     <p><strong>Email:</strong> {user.email}</p>
                     <p><strong>Mobile:</strong> {user.mobile}</p>
                     <p><strong>Role:</strong> {user.role}</p>
+                    <p>ID : {user._id}</p>
                 </div>
             ) : (
                 <p>Loading...</p>

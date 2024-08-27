@@ -12,6 +12,30 @@ const serviceSchema = new mongoose.Schema(
             required: true,
         },
         category: {
+            _id: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Category",
+                required: true,
+            },
+            name: {
+                type: String,
+                required: true,
+            }
+            
+        },
+        type: {
+            _id: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Type",
+                required: true,
+            },
+            name: {
+                type: String,
+                required: true,
+            }
+            
+        },
+        title: {
             type: String,
             required: true,
         },
@@ -19,22 +43,14 @@ const serviceSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        title: {
-            type: String,
-            required: true,
-        },
-        type: {
-            type: String,
-            required: true,
-        },
-        address: {
+        city: {
             type: String,
         },
         email: {
             type: String,
             match: [
                 /.+\@.+\..+/,
-                "Please enter a valid email"
+                "Please enter a valid email address",
             ],
         },
         mobile: {
@@ -57,11 +73,36 @@ const serviceSchema = new mongoose.Schema(
         },
         images: [{
             type: String,
-        }],
+        }]
     },
     {
         timestamps: true,
     }
 );
+
+//middleware to handle cascading deletion of reviews when a service is deleted
+serviceSchema.pre("remove", async function (next) {
+    try {
+        await this.model("Review").deleteMany({ service: this._id });
+        next();
+    } catch (error) {
+        console.log(error.message);
+        next(error);
+    }
+});
+
+//middleware to handle cascading deletion of services from lists when a service is deleted
+serviceSchema.pre("remove", async function (next) {
+    try {
+        await this.model("User").updateMany(
+            { lists: { $elemMatch: { items: this._id } } },
+            { $pull: { "lists.$.items": this._id } }
+        );
+        next();
+    } catch (error) {
+        console.log(error.message);
+        next(error);
+    }
+});
 
 export default mongoose.model("Service", serviceSchema);
