@@ -13,18 +13,16 @@ import PlannerDashboard from './pages/PlannerDashboard';
 import ListDetails from './pages/ListDetail';
 import { AuthProvider } from './context/AuthContext';
 import { SnackbarProvider } from 'notistack';
-import HeroSection from './pages/HeroSection';
 import './App.css'
 const App = () => {
     const location = useLocation();
-    const hideHeaderFooter = location.pathname === '' || location.pathname === '';
+    const hideHeaderFooter = location.pathname === '/login' || location.pathname === '/register';
 
     return (
         <AuthProvider>
             <SnackbarProvider>
-                <div className="flex flex-col min-h-screen  bg-gradient-to-t from-[#0F766E] from-10% to-white to-70%" id='grad'>
+                <div className="flex flex-col min-h-screen ">
                     {!hideHeaderFooter && <Header />}
-                    <HeroSection/>
                 <div className="flex-grow">
                         <Routes>
                             <Route path="/" element={<Home />} />

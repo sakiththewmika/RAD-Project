@@ -24,11 +24,12 @@ export const AuthProvider = ({ children }) => {
             });
     }, []);
 
-    const login = async (email, password) => {
+    const login = async (email, password, role) => {
         try {
-            const res = await axios.post("http://localhost:5200/login", { email, password }, { withCredentials: true });
+            const res = await axios.post("http://localhost:5200/login", { email, password, role }, { withCredentials: true });
             setUser(res.data);
         } catch (err) {
+            console.log(err);
             throw err;
         }
     };

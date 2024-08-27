@@ -187,18 +187,18 @@ const PlannerDashboard = () => {
         <div className="mt-5 w-full">
         {reviews.map((review, index) => (
               <div
-                className="mb-4 border border-gray-100 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700"
+                className="mb-4 border border-gray-100 rounded-lg bg-gray-50 "
                 key={index}
               >
-                <ol className="divide-y divider-gray-200 dark:divide-gray-700">
+                <ol className="divide-y divider-gray-200 ">
                   <li>
                     <a
                       href="#"
-                      className="items-center block p-3 sm:flex hover:bg-gray-100 hover:rounded-lg dark:hover:bg-gray-700"
+                      className="items-center block p-3 sm:flex hover:bg-gray-100 hover:rounded-lg"
                     >
-                      <div className="text-gray-600 dark:text-gray-400">
+                      <div className="text-gray-600 ">
                         <div className="text-base font-normal">
-                          <span className="font-medium text-gray-900 dark:text-white">
+                          <span className="font-medium text-gray-900 ">
                             {user.firstName} {user.lastName}
                           </span>{" "}
                         </div>
