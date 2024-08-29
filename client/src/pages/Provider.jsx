@@ -34,8 +34,8 @@ const Provider = () => {
     useEffect(() => {
         const getCategories = async () => {
             try {
-                const res = await axios.get("http://localhost:5200/category");
-                const sortedCategoryNames = res.data.data.sort((a, b) => a.name.localeCompare(b.name));
+                const res = await axios.get("http://localhost:5200/service/categories");
+                const sortedCategoryNames = res.data.data.sort((a, b) => a.localeCompare(b));
                 setCategoryNames(sortedCategoryNames);
             } catch (err) {
                 console.log(err);
@@ -47,8 +47,8 @@ const Provider = () => {
     useEffect(() => {
         const getTypes = async () => {
             try {
-                const res = await axios.get("http://localhost:5200/type");
-                const sortedTypeNames = res.data.data.sort((a, b) => a.name.localeCompare(b.name));
+                const res = await axios.get("http://localhost:5200/service/types");
+                const sortedTypeNames = res.data.data.sort((a, b) => a.localeCompare(b));
                 setTypeNames(sortedTypeNames);
             } catch (err) {
                 console.log(err);
@@ -60,8 +60,8 @@ const Provider = () => {
     useEffect(() => {
         const getLocation = async () => {
             try {
-                const res = await axios.get("http://localhost:5200/location");
-                const sortedLocationNames = res.data.data.sort((a, b) => a.name.localeCompare(b.name));
+                const res = await axios.get("http://localhost:5200/service/cities");
+                const sortedLocationNames = res.data.data.sort((a, b) => a.localeCompare(b));
                 setLocationNames(sortedLocationNames);
             } catch (err) {
                 console.log(err);
@@ -89,15 +89,15 @@ const Provider = () => {
         let filtered = services;
 
         if (category) {
-            filtered = filtered.filter(service => service.category === category);
+            filtered = filtered.filter(service => service.category.name === category);
         }
 
         if (type) {
-            filtered = filtered.filter(service => service.type === type);
+            filtered = filtered.filter(service => service.type.name === type);
         }
 
         if (location) {
-            filtered = filtered.filter(service => service.address.includes(location));
+            filtered = filtered.filter(service => service.city === location);
         }
 
         setFilteredServices(filtered);
@@ -137,28 +137,30 @@ const Provider = () => {
     };
 
     const renderServiceGroup = (category) => {
-        const serviceGroup = filteredServices.filter(service => service.category === category.name);
+        const serviceGroup = filteredServices.filter(service => service.category.name === category);
         if (serviceGroup.length === 0) {
             return null;
         }
 
         return (
-            <div className='mb-8' key={category._id}>
-                <h2 className="text-2xl font-semibold mb-4">{category.name.charAt(0).toUpperCase() + category.name.slice(1)}s</h2>
+            <div className='mb-8' key={category} >
+                <div className="">
+                    <h2 className="text-2xl font-semibold mb-4">{category.charAt(0).toUpperCase() + category.slice(1)}s</h2>
+                </div>
                 <div className="flex flex-wrap">
                     {serviceGroup.map((service) => (
                         <div className="p-4 w-full sm:w-1/2 md:w-1/3 lg:w-1/4" key={service._id}>
                             <a
-                                className="block p-4 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg hover:bg-gray-100 hover:cursor-pointer"
+                                className="relative block p-4 bg-white/80 border-2 rounded-lg shadow-md hover:shadow-lg transition delay-150 ease-in-out hover:scale-105 hover:bg-white/85 hover:cursor-pointer"
                                 onClick={() => handleCardClick(service)}
                             >
-                                <div className="aspect-w-4 aspect-h-3 mb-4">
-                                    <img src={service.images[0]} alt="poster" className='w-full h-full object-cover rounded' />
+                                <div className="aspect-w-4 aspect-h-4 mb-4">
+                                    <img src={service.images[0]} alt="poster" className='w-full h-full object-cover rounded-md' />
                                 </div>
-                                <div className="h-28">
+                                <div className="h-auto">
                                     <h5 className="text-xl font-bold tracking-tight text-gray-900">{service.title}</h5>
-                                    <p className="font-normal text-gray-700">Location : {service.address}</p>
-                                    <p className="font-normal text-gray-700">Price : {service.price}</p>
+                                    <p className="font-normal text-gray-700">Location : {service.city}</p>
+                                    <p className="font-normal text-gray-500">Price : {service.price}</p>
                                 </div>
                             </a>
                         </div>
