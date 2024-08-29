@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import RegisterUser from './pages/RegisterUser';
 import LoginPage from './pages/LoginPage';
 import ServicePage from './pages/ServicePage';
+import Provider from './pages/Provider';
 import ServiceDetails from './pages/ServiceDetails';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
@@ -26,6 +27,7 @@ const App = () => {
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/services" element={<ServicePage />} />
+                        <Route path="/provider" element={<Provider />} />
                         <Route path="/services/:id" element={<ServiceDetails />} />
                         <Route path="/admin" element={<AdminDashboard />} />
                     </Routes>
