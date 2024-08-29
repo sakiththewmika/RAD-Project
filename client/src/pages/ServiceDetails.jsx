@@ -236,14 +236,14 @@ const ServiceDetails = () => {
                       src={`http://localhost:5200/${review.userID.profilePhoto}`}
                       alt=""
                     />
-                    <div className="text-gray-600 dark:text-gray-400">
+                    <div className="text-gray-600 ">
                       <div className="text-base font-normal">
-                        <span className="font-medium text-gray-900 dark:text-white">
+                        <span className="font-medium text-gray-900 ">
                           {review.userID.firstName} {review.userID.lastName}
-                        </span>{" "}
+                        </span>
                       </div>
                       <div className="text-sm font-normal">
-                        " {review.comment} "
+                        {review.comment}
                       </div>
                       <StarRating rating={review.rating} />
                     </div>
@@ -263,17 +263,15 @@ const ServiceDetails = () => {
                   placeholder="Your Comment..."
                   onChange={(e) => setComment(e.target.value)}
                 ></textarea>
-                {/* <button type="submit" className="inline-flex justify-center p-2 text-green-600 rounded-full cursor-pointer hover:bg-green-100 dark:text-green-500 dark:hover:bg-gray-600">
-            <svg className="w-5 h-5 rotate-90 rtl:-rotate-90" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
-                <path d="m17.914 18.594-8-18a1 1 0 0 0-1.828 0l-8 18a1 1 0 0 0 1.157 1.376L8 18.281V9a1 1 0 0 1 2 0v9.281l6.758 1.689a1 1 0 0 0 1.156-1.376Z"
-        onClick={handleSaveComment}
-        
-        /> */}
-                {/* </svg> */}
-                {/* <span className="sr-only" >Send message</span>
-        
-        </button> */}
-                <button onClick={handleSaveComment}>
+                <button onClick={handleSaveComment} type="submit" className="inline-flex justify-center p-2 text-green-600 rounded-full cursor-pointer hover:bg-green-100">
+                  <svg className="w-5 h-5 rotate-90 rtl:-rotate-90" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                    <path d="m17.914 18.594-8-18a1 1 0 0 0-1.828 0l-8 18a1 1 0 0 0 1.157 1.376L8 18.281V9a1 1 0 0 1 2 0v9.281l6.758 1.689a1 1 0 0 0 1.156-1.376Z"
+                    />
+                  </svg>
+                  <span className="sr-only" >Send message</span>
+
+                </button>
+                {/* <button onClick={handleSaveComment}>
                   Save Comment
                   <svg
                     className="w-5 h-5 rotate-90 rtl:-rotate-90"
@@ -284,7 +282,7 @@ const ServiceDetails = () => {
                   >
                     <path d="m17.914 18.594-8-18a1 1 0 0 0-1.828 0l-8 18a1 1 0 0 0 1.157 1.376L8 18.281V9a1 1 0 0 1 2 0v9.281l6.758 1.689a1 1 0 0 0 1.156-1.376Z" />
                   </svg>
-                </button>
+                </button> */}
               </div>
             </form>
           </div>

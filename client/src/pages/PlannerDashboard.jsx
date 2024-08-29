@@ -202,8 +202,8 @@ const PlannerDashboard = () => {
                             {reviews.title} 
                           </span>{" "}
                         </div>
-                        <div className="text-sm font-normal">
-                          " {review.comment} "
+                        <div className="text-md font-normal">
+                          {review.comment}
                         </div>
                         <StarRating rating={review.rating} />
                       </div>

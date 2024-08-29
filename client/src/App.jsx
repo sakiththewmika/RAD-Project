@@ -21,7 +21,7 @@ const App = () => {
     return (
         <AuthProvider>
             <SnackbarProvider>
-                <div className="flex flex-col min-h-screen ">
+                <div className="flex flex-col min-h-screen bg-gradient-to-t from-[#0F766E] from-10% to-white to-70%">
                     {!hideHeaderFooter && <Header />}
                 <div className="flex-grow">
                         <Routes>

@@ -23,13 +23,12 @@ const HeroSection = ({destination='/services'}) => {
 
         <Link 
            to={destination}
-          className='text-black rounded-lg w-80 py-4 flex items-center justify-center'
-          style={{backgroundColor:'#D9CB9F'}}
+          className='text-yellow-500 rounded-lg w-80 py-4 flex items-center justify-center bg-teal-700 hover:bg-teal-800 mt-5'
         >
-          <span className='flex items-center space-x-2'>
-              <span>Get Started</span>
+          <div className='flex justify-center items-center space-x-2'>
+              <span className='font-medium text-2xl'>Get Started</span>
               <BsArrowRight className='text-2xl'/>
-          </span>
+          </div>
         
         </Link>
        
