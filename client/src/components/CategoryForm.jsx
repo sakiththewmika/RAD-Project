@@ -14,7 +14,6 @@ const CategoryForm = ({ category, onClose }) => {
         e.preventDefault();
         try {
             if (category) {
-                // eslint-disable-next-line react/prop-types
                 await axios.put(`http://localhost:5200/category/${category._id}`, { name });
             } else {
                 await axios.post('http://localhost:5200/category', { name });

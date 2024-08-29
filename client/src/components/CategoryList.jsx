@@ -2,15 +2,24 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CategoryForm from './CategoryForm';
 import TypeForm from './TypeForm';
+import DeleteConfirmationPopup from './DeleteConfirmationPopUp';
 
 const CategoryList = () => {
+    // Categories
     const [categories, setCategories] = useState([]);
     const [currentCategory, setCurrentCategory] = useState(null);
     const [showCategoryForm, setShowCategoryForm] = useState(false);
 
+    // Types
     const [types, setTypes] = useState([]);
     const [currentType, setCurrentType] = useState(null);
     const [showTypeForm, setShowTypeForm] = useState(false);
+
+    // DeletePopUp
+    // const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+    const [showConfirmPopup, setShowConfirmPopup] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState(null);
+    const [deleteItem, setDeleteItem] = useState('');
 
     useEffect(() => {
         fetchCategories();
@@ -45,14 +54,19 @@ const CategoryList = () => {
         setShowCategoryForm(true);
     };
 
-    const handleDeleteCategory = async (id) => {
-        try {
-            await axios.delete(`http://localhost:5200/category/${id}`);
-            fetchCategories();
-        } catch (error) {
-            console.error('Error deleting category', error);
-        }
-    };
+    // const handleDeleteCategory = async (id) => {
+    //     try {
+    //         await axios.delete(`http://localhost:5200/category/${id}`);
+    //         fetchCategories();
+    //     } catch (error) {
+    //         console.error('Error deleting category', error);
+    //     }
+    // };
+    const handleDeleteCategory = (id) => {
+        setItemToDelete(id);
+        setDeleteItem('category');
+        setShowConfirmPopup(true);
+    }
 
     const handleAddType = () => {
         setCurrentType(null);
@@ -64,14 +78,20 @@ const CategoryList = () => {
         setShowTypeForm(true);
     };
 
-    const handleDeleteType = async (id) => {
-        try {
-            await axios.delete(`http://localhost:5200/type/${id}`);
-            fetchTypes();
-        } catch (error) {
-            console.error('Error deleting type',error);
-        }
-    };
+    // const handledeleteItem = async (id) => {
+    //     try {
+    //         await axios.delete(`http://localhost:5200/type/${id}`);
+    //         fetchTypes();
+    //     } catch (error) {
+    //         console.error('Error deleting type',error);
+    //     }
+    // };
+
+    const handleDeleteType= (id) => {
+        setItemToDelete(id);
+        setDeleteItem('type');
+        setShowConfirmPopup(true);
+    }
 
     const handleCategoryFormClose = () => {
         setShowCategoryForm(false);
@@ -81,6 +101,29 @@ const CategoryList = () => {
     const handleTypeFormClose = () => {
         setShowTypeForm(false);
         fetchTypes();
+    }
+
+
+    const confirmDelete = async () => {
+        try {
+            if (deleteItem === 'category') {
+                await axios.delete(`http://localhost:5200/category/${itemToDelete}`);
+                fetchCategories();
+            }
+            else if (deleteItem === 'type') {
+                await axios.delete(`http://localhost:5200/type/${itemToDelete}`);
+                fetchTypes();
+            }
+        }
+        catch (error) {
+            console.error('Error deleting item:', error);
+            setShowConfirmPopup(false);
+        }
+    }
+
+    const cancelDelete = () => {
+        setShowConfirmPopup(false);
+        setItemToDelete(null);
     }
 
     return (
@@ -146,6 +189,14 @@ const CategoryList = () => {
                 ))}
             </ul>
             </div>
+
+            {/* Delete Confirmation Popup */}
+            <DeleteConfirmationPopup
+                show={showConfirmPopup}
+                deleteItem={deleteItem}
+                onConfirm={confirmDelete}
+                onCancel={cancelDelete}
+            />
         </div>
     );
 };
