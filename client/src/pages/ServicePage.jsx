@@ -257,7 +257,7 @@ const ServicePage = () => {
         <div className="p-8">
             <div className="mb-2 -mt-5 flex justify-end flex-col sm:flex-row">
                 <CustomDropdown
-                    placeholder="Select Category"
+                    placeholder="All Categories"
                     options={categoryNames}
                     selectedOption={category}
                     setSelectedOption={setCategory}
@@ -274,7 +274,7 @@ const ServicePage = () => {
                 </select> */}
 
                 <CustomDropdown
-                    placeholder="Select Type"
+                    placeholder="All Types"
                     options={typeNames}
                     selectedOption={type}
                     setSelectedOption={setType}
@@ -291,7 +291,7 @@ const ServicePage = () => {
                 </select> */}
 
                 <CustomDropdown
-                    placeholder="Select Location"
+                    placeholder="All Locations"
                     options={locationNames}
                     selectedOption={location}
                     setSelectedOption={setLocation}

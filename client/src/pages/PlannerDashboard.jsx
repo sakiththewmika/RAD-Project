@@ -222,7 +222,7 @@ const PlannerDashboard = () => {
                             {review.serviceID.title} 
                           </span>
                         </div>
-                        <div className="text-sm font-normal">
+                        <div className="text-md font-normal">
                           {review.comment}
                         </div>
                         <StarRating rating={review.rating} />

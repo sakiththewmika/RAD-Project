@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import RegisterUser from './pages/RegisterUser';
 import LoginPage from './pages/LoginPage';
 import ServicePage from './pages/ServicePage';
+import Provider from './pages/Provider';
 import ServiceDetails from './pages/ServiceDetails';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
@@ -21,7 +22,7 @@ const App = () => {
     return (
         <AuthProvider>
             <SnackbarProvider>
-                <div className="flex flex-col min-h-screen ">
+                <div className="flex flex-col min-h-screen bg-gradient-to-t from-[#0F766E] from-10% to-white to-70%">
                     {!hideHeaderFooter && <Header />}
                 <div className="flex-grow">
                         <Routes>
@@ -32,6 +33,7 @@ const App = () => {
                             <Route path="/services" element={<ServicePage />} />
                             <Route path="/services/:id" element={<ServiceDetails />} />
                             <Route path="/admin" element={<AdminDashboard />} />
+                            <Route path="/provider" element={<Provider />} />
                             <Route path="/planner" element={<PlannerDashboard />} >
                                 <Route path="list/:listID" element={<ListDetails />} />
                             </Route>

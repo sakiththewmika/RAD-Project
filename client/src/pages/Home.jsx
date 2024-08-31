@@ -94,7 +94,7 @@ const Home = () => {
             </p>
             <div className="my-4">
                 <Link to="/register" className="bg-teal-600 text-white px-4 py-2 rounded-lg hover:bg-teal-700">Register</Link>
-                <Link to="/services" className="bg-teal-800 text-white px-4 py-2 rounded-lg hover:bg-teal-900 ml-4">Provider</Link>
+                <Link to="/provider" className="bg-teal-800 text-white px-4 py-2 rounded-lg hover:bg-teal-900 ml-4">Provider</Link>
                 <Link to="/admin" className="bg-teal-700 text-white px-4 py-2 rounded-lg hover:bg-teal-800 ml-4">Admin Dashboard</Link>
                 <Link to="/planner" className="bg-teal-700 text-white px-4 py-2 rounded-lg hover:bg-teal-800 ml-4">Planner Dashboard</Link>
                 {user ? (
