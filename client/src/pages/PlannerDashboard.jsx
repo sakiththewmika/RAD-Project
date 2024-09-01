@@ -7,6 +7,8 @@ import StarRating from '../components/StarRating';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
+import {MdOutlineAddBox, MdOutlineDelete } from 'react-icons/md';
+
 
 const PlannerDashboard = () => {
     const [lists, setLists] = useState([]);
@@ -22,9 +24,26 @@ const PlannerDashboard = () => {
     const menuRef = useRef(null);
     const {listID} = useParams();
     const { enqueueSnackbar } = useSnackbar();
-
+    const [reviewID,setReviewID]=useState(null);
     const navigate = useNavigate();
+    const [delReviewID,setDelReviewID]=useState(null);
+   
+    //delete review
+    const handleReviewDelete=(reviewID)=>{
+        axios
+            .delete(`http://localhost:5200/review/${reviewID}`)
+            .then(()=>{
+                navigate('/planner')
+            })
+            .catch((error)=>{
+                alert("Error Occured");
+                console.log(error);
+            })
+    }
 
+
+    
+    //load the reviews added by a particular user
     const fetchLists = () => {
         setLoading(true);
         axios.get(`http://localhost:5200/list/${user._id}`)
@@ -181,16 +200,17 @@ const PlannerDashboard = () => {
   {/* Displaying my reviews */}
     <div className='p-4'>
        <h1 className='text-3xl my-8'>My Reviews</h1>
-      <div className='flex justify-between items-center'>
+      
        
         {/* <ReviewsTable reviews={reviews} /> */}
-        <div className="mt-5 w-full">
-        {reviews.map((review, index) => (
+        <div className="mt-5">
+        {reviews.map((review) => (
               <div
-                className="mb-4 border border-gray-100 rounded-lg bg-gray-50 "
-                key={index}
+                className="mb-4 border border-gray-100 rounded-lg bg-gray-50 flex flex-row w-12/12 p-2"
+                key={review._id}
               >
-                <ol className="divide-y divider-gray-200 ">
+                <div className='flex flex-1'>
+                <ol className="divider-gray-200 ">
                   <li>
                     <a
                       href="#"
@@ -198,9 +218,9 @@ const PlannerDashboard = () => {
                     >
                       <div className="text-gray-600 ">
                         <div className="text-base font-normal">
-                          <span className="font-medium text-gray-900 dark:text-white">
-                            {reviews.title} 
-                          </span>{" "}
+                          <span className="font-medium text-gray-900">
+                            {review.serviceID.title} 
+                          </span>
                         </div>
                         <div className="text-md font-normal">
                           {review.comment}
@@ -210,12 +230,28 @@ const PlannerDashboard = () => {
                     </a>
                   </li>
                 </ol>
+                </div>
+                <div className='flex flex-1 justify-end items-center'>
+               
+
+
+
+
+
+                <MdOutlineDelete className='text-2xl text-red-600 hover:cursor-pointer'  onClick={()=>handleReviewDelete(review._id)} />
+                </div>
+                
               </div>
+              
             ))}
         </div>    
             
-      </div>
+      
     </div>
+
+    {/* delete toggle modal */}
+
+
         </div>
     
     );
