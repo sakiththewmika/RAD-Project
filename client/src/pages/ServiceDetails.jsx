@@ -4,6 +4,7 @@ import axios from "axios";
 import StarRating from "../components/StarRating";
 import { useAuth } from "../context/AuthContext";
 import AddRating from "../components/AddRating";
+import DOMPurify from 'dompurify';
 
 const ServiceDetails = () => {
   const { id } = useParams(); // Get the service ID from the URL
@@ -20,6 +21,7 @@ const ServiceDetails = () => {
   const menuRef = useRef(null);
   const userID = user._id;
   const serviceID = id;
+  
 
   const handleRatingSelect = (rating) => {
     setRating(rating);
@@ -156,12 +158,12 @@ const ServiceDetails = () => {
             <img
               id="mainImage"
               className="h-auto max-w-full rounded-lg"
-              src={mainImage}
+              src={`http://localhost:5200/${mainImage}`}
               alt="Main"
             />
           </div>
           <div className="space-y-4">
-            <p className="text-lg">{service.description}</p>
+            <div className="text-lg" dangerouslySetInnerHTML={{ __html:  DOMPurify.sanitize(service.description) }} />
             <p className="text-lg">
               <strong>Posted by:</strong> {user.firstName} {user.lastName}
             </p>
@@ -182,7 +184,7 @@ const ServiceDetails = () => {
                 <div key={index}>
                   <img
                     className="h-auto max-w-full rounded-lg cursor-pointer"
-                    src={image}
+                    src={`http://localhost:5200/${image}`}
                     alt={`post ${index + 1}`}
                     onClick={() => setMainImage(image)}
                   />

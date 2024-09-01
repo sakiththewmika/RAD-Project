@@ -93,7 +93,7 @@ const Header = () => {
                         </div>
                     ) : (
                         <Link to="/login">
-                            <button type="button" className="text-yellow-500 bg-[#0F766E] hover:bg-[#0E6C64] focus:ring-4 focus:outline-none focus:ring-teal-300 font-medium rounded-xl text-lg px-4 py-2 text-center">
+                            <button type="button" className="text-yellow-500 bg-[#0F766E] hover:bg-[#0E6C64] focus:ring-4 focus:outline-none focus:ring-teal-700 font-medium rounded-xl text-lg px-4 py-2 text-center">
                                 Get started
                             </button>
                         </Link>

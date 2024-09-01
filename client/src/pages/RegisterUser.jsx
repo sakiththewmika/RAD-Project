@@ -158,7 +158,7 @@ const RegisterUser = () => {
                                     accept=".jpg, .jpeg, .png"
                                     onChange={handleProfilePhotoChange}
 
-                                    className={`file:bg-[#0F766E] file:text-white file:border-0 file:hover:bg-teal-800 file:hover:cursor-pointer file:py-1.5 file:text-sm border-2 w-11/12 focus:ring-[#139086] focus:border-[#139086] ${firstNameError ? "border-red-500" : "border-[#0F766E]"}`}
+                                    className={`file:bg-[#0F766E] file:text-white file:border-0 file:hover:bg-teal-800 file:hover:cursor-pointer file:py-1.5 file:text-sm border-2 w-11/12 focus:ring-[#139086] focus:border-[#139086] ${profilePhotoError ? "border-red-500" : "border-[#0F766E]"}`}
                                 />
                                 {profilePhotoError && <p className="text-red-500">{profilePhotoError}</p>}
                             </div>
