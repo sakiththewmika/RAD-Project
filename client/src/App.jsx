@@ -9,6 +9,9 @@ import RegisterUser from './pages/RegisterUser';
 import LoginPage from './pages/LoginPage';
 import ServicePage from './pages/ServicePage';
 import Provider from './pages/Provider';
+import ProviderDashboard from './pages/ProviderDashboard';
+import AddService from './pages/AddService';
+import EditService from './pages/EditService'
 import ServiceDetails from './pages/ServiceDetails';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
@@ -37,7 +40,9 @@ const App = () => {
                             <Route path="/services" element={<ServicePage />} />
                             <Route path="/services/:id" element={<ServiceDetails />} />
                             <Route path="/admin" element={<AdminDashboard />} />
-                            <Route path="/provider" element={<Provider />} />
+                            <Route path="/provider" element={<ProviderDashboard />} />
+                            <Route path="/addservice" element={<AddService/>} />
+                            <Route path="/editservice/:id" element={<EditService />} />
                             <Route path="/planner" element={<PlannerDashboard />} >
                                 <Route path="list/:listID" element={<ListDetails />} />
                             </Route>

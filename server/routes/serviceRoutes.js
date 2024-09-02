@@ -1,42 +1,80 @@
 import express from 'express';
 import Service from '../models/serviceModel.js';
-import User from '../models/userModel.js'
-import Review from '../models/reviewModel.js'
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import multer from 'multer';
+import User from '../models/userModel.js';
+import Review from '../models/reviewModel.js';
 
 const router = express.Router();
 
-//route to save a new service
-router.post('/', async (req, res) => {
+// Multer configuration
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/'); // Uploads folder
+    },
+    filename: function (req, file, cb) {
+        cb(null, new Date().toISOString().replace(/:/g, '-') + '-' + file.originalname); // Unique filename
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    // Accept only jpeg and png files
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+        cb(null, true);
+    } else {
+        cb(new Error('File type not supported'), false);
+    }
+};
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 10 // 10MB max file size
+    },
+    fileFilter: fileFilter
+});
+
+router.use('/uploads', express.static(`${__dirname}/uploads`));
+
+// Route to save a new service with image upload
+router.post('/', upload.array('images', 5), async (req, res) => {
     try {
-        if (
-            !req.body.userID ||
-            !req.body.categoryID ||
-            !req.body.description ||
-            !req.body.title ||
-            !req.body.typeID ||
-            !req.body.price
-        ) {
+        const { userID, categoryID, categoryName, typeID, typeName, description, title, email, mobile, phone, city, price } = req.body;
+
+        if (!userID || !categoryID || !description || !title || !typeID || !price) {
             return res.status(400).send({ message: 'All fields are required' });
         }
+
+        // Handling image files
+        let images = [];
+        if (req.files && req.files.length > 0) {
+            images = req.files.map(file => file.path); // Store file paths in images array
+        }
+
         const newService = {
-            userID: req.body.userID,
+            userID,
             category: {
-                _id: req.body.categoryID,
-                name: req.body.categoryName
+                _id: categoryID,
+                name: categoryName
             },
             type: {
-                _id: req.body.typeID,
-                name: req.body.typeName
+                _id: typeID,
+                name: typeName
             },
-            description: req.body.description,
-            title: req.body.title,
-            email: req.body.email,
-            mobile: req.body.mobile,
-            phone: req.body.phone,
-            city: req.body.city,
-            price: req.body.price,
-            images: req.body.images,
+            description,
+            title,
+            email,
+            mobile,
+            phone,
+            city,
+            price,
+            images // Storing image file paths in the service document
         };
+
         const createdService = await Service.create(newService);
         return res.status(201).send(createdService);
 
@@ -137,19 +175,19 @@ router.get('/cities', async (req, res) => {
 // });
 
 //route to get service by userID
-// router.get('/user/:userID', async (req, res) => {
-//     try {
-//         const { userID } = req.params;
-//         const services = await Service.find({ userID: userID });
-//         return res.status(200).send({
-//             count: services.length,
-//             data: services
-//         });
-//     } catch {
-//         console.log(error.message);
-//         res.status(500).send({ message: error.message })
-//     }
-// });
+router.get('/user/:userID', async (req, res) => {
+    try {
+        const { userID } = req.params;
+        const services = await Service.find({ userID: userID });
+        return res.status(200).send({
+            count: services.length,
+            data: services
+        });
+    } catch (error){
+        console.log(error.message);
+        res.status(500).send({ message: error.message })
+    }
+});
 
 //route to get a service by id
 router.get('/:id', async (req, res) => {
@@ -168,39 +206,41 @@ router.get('/:id', async (req, res) => {
 });
 
 //route to update a service by id
-router.put('/:id', async (req, res) => {
+router.put('/:id', upload.array('images', 5), async (req, res) => {
     try {
-        if (
-            !req.body.userID ||
-            !req.body.categoryID ||
-            !req.body.typeID ||
-            !req.body.description ||
-            !req.body.title ||
-            !req.body.price
-        ) {
+        const { userID, categoryID, categoryName, typeID, typeName, description, title, email, mobile, phone, city, price } = req.body;
+
+        if (!userID || !categoryID || !description || !title || !typeID || !price) {
             return res.status(400).send({ message: 'All fields are required' });
         }
+
+        // Handling image files
+        let images = [];
+        if (req.files && req.files.length > 0) {
+            images = req.files.map(file => file.path); // Store file paths in images array
+        }
+        
         const { id } = req.params;
         const service = {
-            userID: req.body.userID,
+            userID,
             category: {
-                _id: req.body.categoryID,
-                name: req.body.categoryName
+                _id: categoryID,
+                name: categoryName
             },
             type: {
-                _id: req.body.typeID,
-                name: req.body.typeName
+                _id: typeID,
+                name: typeName
             },
-            reviews: req.body.reviews,
-            description: req.body.description,
-            title: req.body.title,
-            email: req.body.email,
-            mobile: req.body.mobile,
-            phone: req.body.phone,
-            city: req.body.city,
-            price: req.body.price,
-            images: req.body.images,
+            description,
+            title,
+            email,
+            mobile,
+            phone,
+            city,
+            price,
+            images // Storing image file paths in the service document
         };
+
         const updatedService = await Service.findByIdAndUpdate(id, service, { new: true });
 
         if (!updatedService) {

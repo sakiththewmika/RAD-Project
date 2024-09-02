@@ -1,0 +1,38 @@
+/* Editor.css */
+
+/* Default text and icon color */
+.ql-toolbar .ql-picker-label,
+.ql-toolbar .ql-picker-item,
+.ql-toolbar .ql-stroke,
+.ql-toolbar .ql-fill,
+.ql-toolbar .ql-picker-options {
+    color: #6B7280 !important; /* text-gray-500 */
+}
+
+/* Default icon stroke color */
+.ql-toolbar .ql-stroke {
+    stroke: #6B7280 !important; /* gray */
+}
+
+/* Default icon fill color */
+.ql-toolbar .ql-fill {
+    fill: #6B7280 !important; /* gray */
+}
+
+/* Hover state */
+.ql-toolbar .ql-picker-label:hover,
+.ql-toolbar .ql-picker-item:hover,
+.ql-toolbar .ql-stroke:hover,
+.ql-toolbar .ql-fill:hover {
+    color: #0F766E !important; /* text-teal-500 */
+    stroke: #0F766E !important; /* teal */
+}
+
+/* Active state */
+.ql-toolbar .ql-active .ql-stroke,
+.ql-toolbar .ql-active .ql-fill,
+.ql-toolbar .ql-picker-label .ql-active,
+.ql-toolbar .ql-picker-item .ql-active {
+    color: #0F766E !important; /* text-teal-600 */
+    stroke: #0F766E !important; /* teal */
+}
