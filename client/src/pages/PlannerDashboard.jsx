@@ -31,7 +31,7 @@ const PlannerDashboard = () => {
     //delete review
     const handleReviewDelete=(reviewID)=>{
         axios
-            .delete(`http://localhost:5200/review/${reviewID}`)
+            .delete(`http://localhost:5200/review/${reviewID}`, { withCredentials: true })
             .then(()=>{
                 navigate('/planner')
             })
@@ -41,12 +41,9 @@ const PlannerDashboard = () => {
             })
     }
 
-
-    
-    //load the reviews added by a particular user
     const fetchLists = () => {
         setLoading(true);
-        axios.get(`http://localhost:5200/list/${user._id}`)
+        axios.get(`http://localhost:5200/list/${user._id}`, { withCredentials: true })
             .then((res) => {
                 setLists(res.data.data);
                 setLoading(false);
@@ -63,7 +60,7 @@ const PlannerDashboard = () => {
 
     useEffect(()=>{
         axios
-          .get(`http://localhost:5200/review/myReviews/${user._id}`)
+          .get(`http://localhost:5200/review/myReviews/${user._id}`, { withCredentials: true })
           .then((response)=>{
             setReviews(response.data.data);
           })

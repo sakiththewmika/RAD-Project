@@ -8,7 +8,7 @@ const DeleteListModal = ({ listID, onClose }) => {
     const handleDeleteList = () => {
         setLoading(true);
         axios
-            .delete(`http://localhost:5200/list/${listID}`)
+            .delete(`http://localhost:5200/list/${listID}`, { withCredentials: true })
             .then(() => {
                 setLoading(false);
                 onClose();

@@ -2,17 +2,16 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-const LoginPage = () => {
+const AdminLogin = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [role, setRole] = useState("planner");
-    const [isProvider, setIsProvider] = useState(false);
     const [error, setError] = useState("");
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { login  } = useAuth();
+    const { login } = useAuth();
+    const role = "admin";
 
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -21,16 +20,6 @@ const LoginPage = () => {
 
     const validatePassword = (password) => {
         return password.length >= 6;
-    };
-
-    const handleRoleChange = () => {
-        if (role === "planner") {
-            setIsProvider(true);
-            setRole("provider");
-        } else {
-            setIsProvider(false);
-            setRole("planner");
-        }
     };
 
     const handleEmailChange = (e) => {
@@ -61,11 +50,7 @@ const LoginPage = () => {
         setLoading(true);
         try {
             await login(email, password, role);
-            if (role === "planner") {
-                navigate("/services");
-            } else {    
-                navigate("/provider");
-            }
+            navigate("/admin");
         } catch (err) {
             setLoading(false);
             console.log(err);
@@ -91,20 +76,6 @@ const LoginPage = () => {
                 <div className="w-3/4 max-w-md mx-auto">
                     <div className="mb-8">
                         <h1 className="text-3xl text-gray-700 font-semibold text-center">Sign In</h1>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <button
-                            onClick={handleRoleChange}
-                            disabled={!isProvider}
-                            className="w-full text-lg py-1.5 rounded-md border-[#0F766E] border-2 text-[#0F766E] hover:text-white hover:bg-[#0F766E] disabled:bg-[#0F766E] disabled:text-white">
-                            Event Planner
-                        </button>
-                        <button
-                            onClick={handleRoleChange}
-                            disabled={isProvider}
-                            className="w-full text-lg py-1.5 rounded-md border-[#0F766E] border-2 text-[#0F766E] hover:text-white hover:bg-[#0F766E] disabled:bg-[#0F766E] disabled:text-white">
-                            Service Provider
-                        </button>
                     </div>
                     <div className="my-4">
                         <label className="block text-lg text-gray-500">Email Address</label>
@@ -136,13 +107,10 @@ const LoginPage = () => {
                         {loading ? "Loading..." : "Login"}
                     </button>
                     {error && <p className="text-red-500 mb-4">{error}</p>}
-                    <div className="mt-4 text-center">
-                        <p className="text-gray-500 text-lg">Don't have an account? <a href="/register" className="text-[#0F766E] hover:text-[#0E6C64]">Sign up</a></p>
-                    </div>
                 </div>
             </div>
         </div>
     );
 };
 
-export default LoginPage;
+export default AdminLogin;

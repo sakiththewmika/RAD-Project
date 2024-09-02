@@ -1,11 +1,11 @@
 import express from 'express';
 import User from '../models/userModel.js';
-import mongoose from 'mongoose';
+import { authentication, authorization } from '../middleware/auth.js';
 
 const router = express.Router();
 
 //route to add new list to user by userID - test passed
-router.post('/:userID', async (req, res) => {
+router.post('/:userID', authentication, authorization(['planner']), async (req, res) => {
     try {
         const { userID } = req.params;
         const user = await User.findById(userID);
@@ -22,7 +22,7 @@ router.post('/:userID', async (req, res) => {
 });
 
 //route to get all lists by userID - test passed
-router.get('/:userID', async (req, res) => {
+router.get('/:userID', authentication, authorization(['planner']), async (req, res) => {
     try {
         const { userID } = req.params;
         const user = await User.findById(userID);
@@ -40,7 +40,7 @@ router.get('/:userID', async (req, res) => {
 });
 
 //route to update name of list by id - test passed
-router.put('/:id', async (req, res) => {
+router.put('/:id', authentication, authorization(['planner']), async (req, res) => {
     try {
         if (!req.body.name) {
             return res.status(400).send({ message: 'Name is required' });
@@ -61,7 +61,7 @@ router.put('/:id', async (req, res) => {
 });
 
 //route to delete list by id - test passed
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authentication, authorization(['planner']), async (req, res) => {
     try {
         const list = await User.findOneAndUpdate(
             { 'lists._id': req.params.id },
@@ -78,7 +78,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 //route to add service to a list by listID
-router.post('/service/:listID', async (req, res) => {
+router.post('/service/:listID', authentication, authorization(['planner']), async (req, res) => {
     try {
         const { listID } = req.params;
         const { serviceID } = req.body;
@@ -98,7 +98,7 @@ router.post('/service/:listID', async (req, res) => {
 
 
 //route to add service to a list by listID
-router.post('/:userID/list/:listID', async (req, res) => {
+router.post('/:userID/list/:listID', authentication, authorization(['planner']), async (req, res) => {
     try {
         const { userID, listID } = req.params;
         const { serviceID } = req.body;
@@ -127,7 +127,7 @@ router.post('/:userID/list/:listID', async (req, res) => {
 });
 
 //route to remove service from a list by listID
-router.delete('/:userID/list/:listID/service/:serviceID', async (req, res) => {
+router.delete('/:userID/list/:listID/service/:serviceID', authentication, authorization(['planner']), async (req, res) => {
     try {
         const { userID, listID, serviceID } = req.params;
         const user = await User.findById(userID);
@@ -155,7 +155,7 @@ router.delete('/:userID/list/:listID/service/:serviceID', async (req, res) => {
 });
 
 //route to get services with details in a list by listID - test passed
-router.get('/:userID/:listID', async (req, res) => {
+router.get('/:userID/:listID', authentication, authorization(['planner']), async (req, res) => {
     try {
         const { userID, listID } = req.params;
 

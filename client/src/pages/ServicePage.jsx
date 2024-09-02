@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
-import {Alert} from 'flowbite-react';
+import { Alert } from 'flowbite-react';
 import CustomDropdown from '../components/CustomDropdown';
 import axios from "axios";
 import { useSnackbar } from 'notistack';
@@ -87,7 +87,7 @@ const ServicePage = () => {
     useEffect(() => {
         const fetchLists = () => {
             setLoading(true);
-            axios.get(`http://localhost:5200/list/${user._id}`)
+            axios.get(`http://localhost:5200/list/${user._id}`, { withCredentials: true })
                 .then((res) => {
                     setLists(res.data.data);
                     setLoading(false);
@@ -142,7 +142,7 @@ const ServicePage = () => {
     const handleAddList = (listID, serviceID, event) => {
         event.stopPropagation();
         // setLoading(true);
-        axios.post(`http://localhost:5200/list/${user._id}/list/${listID}`, { serviceID })
+        axios.post(`http://localhost:5200/list/${user._id}/list/${listID}`, { serviceID }, { withCredentials: true })
             .then((res) => {
                 console.log(res.data.message);
                 setOpenMenuId(null);
@@ -216,20 +216,22 @@ const ServicePage = () => {
                                 onClick={() => handleCardClick(service)}
                             >
                                 <div className="aspect-w-4 aspect-h-4 mb-4">
-                                    <img src={service.images[0]} alt="poster" className='w-full h-full object-cover rounded-md' />
+                                    <img src={`http://localhost:5200/${service.images[0]}`} alt="poster" className='w-full h-full object-cover rounded-md' />
                                 </div>
                                 <div className="h-auto">
                                     <h5 className="text-xl font-bold tracking-tight text-gray-900">{service.title}</h5>
                                     <p className="font-normal text-gray-700">Location : {service.city}</p>
                                     <p className="font-normal text-gray-500">Price : {service.price}</p>
                                 </div>
-                                <button
-                                    onClick={(e) => toggleMenu(service._id, e)}
-                                    className="absolute z-10 bottom-2 right-2 text-gray-600 hover:text-gray-900"
-                                >
-                                    <p className="text-2xl font-bold">+</p>
-                                </button>
-                                {openMenuId === service._id && user && (
+                                {user && user.role === 'planner' && (
+                                    <button
+                                        onClick={(e) => toggleMenu(service._id, e)}
+                                        className="absolute z-10 bottom-2 right-2 text-gray-600 hover:text-gray-900"
+                                    >
+                                        <p className="text-2xl font-bold">+</p>
+                                    </button>
+                                )}
+                                {openMenuId === service._id && (
                                     <div ref={menuRef} className="absolute bottom-8 right-2 mt-2 w-auto bg-white rounded-md shadow-lg z-10">
                                         <ul>
                                             <li className="px-4 py-2">Add to List</li>
@@ -262,50 +264,18 @@ const ServicePage = () => {
                     selectedOption={category}
                     setSelectedOption={setCategory}
                 />
-
-                {/* Category filter dropdown */}
-                {/* <select onChange={(e) => setCategory(e.target.value)} value={category} className="mb-2 sm:mb-0 sm:mr-4 pl-2  text-left border border-gray-300 rounded">
-                    <option>Select Category</option>
-                    {categoryNames.map((category, index) => (
-                        <option value={category} key={index} >
-                            {category}
-                        </option>
-                    ))}
-                </select> */}
-
                 <CustomDropdown
                     placeholder="All Types"
                     options={typeNames}
                     selectedOption={type}
                     setSelectedOption={setType}
                 />
-
-                {/* Type filter dropdown */}
-                {/* <select onChange={(e) => setType(e.target.value)} value={type} className="mb-2 sm:mb-0 sm:mr-4 pl-2 border border-gray-300 rounded">
-                    <option value="">Select Type</option>
-                    {typeNames.map((type, index) => (
-                        <option value={type} key={index}>
-                            {type}
-                        </option>
-                    ))}
-                </select> */}
-
                 <CustomDropdown
                     placeholder="All Locations"
                     options={locationNames}
                     selectedOption={location}
                     setSelectedOption={setLocation}
                 />
-
-                {/* Location filter input */}
-                {/* <select onChange={(e) => setLocation(e.target.value)} value={location} className="mb-2 sm:mb-0 sm:mr-4 pl-2 border border-gray-300 rounded">
-                    <option value="">Select Location</option>
-                    {locationNames.map((location, index) => (
-                        <option value={location} key={index}>
-                            {location}
-                        </option>
-                    ))}
-                </select> */}
             </div>
             <hr className="mb-6" />
             {/* Display loading state or filtered services */}

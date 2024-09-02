@@ -241,7 +241,7 @@ const AddService = () => {
             });
 
             try {
-                await axios.post("http://localhost:5200/service", formData);
+                await axios.post("http://localhost:5200/service", formData, { withCredentials: true });
                 navigate("/provider");
             } catch (error) {
                 console.error(error);
@@ -419,7 +419,7 @@ const AddService = () => {
 
             <div className="mt-6 flex justify-between">
                 <Link
-                    to="/providerdashboard"
+                    to="/provider"
                     className="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-600"
                 >
                     Cancel
