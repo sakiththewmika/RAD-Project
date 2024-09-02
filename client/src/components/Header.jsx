@@ -119,7 +119,7 @@ const Header = () => {
                             </Link>
                         </li>
                         <li>
-                            <Link to="/about" onClick={handleNavCollapse} className={`block text-lg py-2 px-3 rounded md:p-0 ${location.pathname === '/about' ? 'bg-teal-500 md:bg-transparent md:text-teal-700' : ' text-black hover:bg-teal-500/40 md:hover:bg-transparent md:bg-transparent md:hover:text-teal-700'}`} aria-current={location.pathname === '/about' ? 'about page' : undefined}>
+                            <Link to="/about" id="aboutUsSection"onClick={handleNavCollapse} className={`block text-lg py-2 px-3 rounded md:p-0 ${location.pathname === '/about' ? 'bg-teal-500 md:bg-transparent md:text-teal-700' : ' text-black hover:bg-teal-500/40 md:hover:bg-transparent md:bg-transparent md:hover:text-teal-700'}`} aria-current={location.pathname === '/about' ? 'about page' : undefined}>
                                 About
                             </Link>
                         </li>
@@ -135,6 +135,7 @@ const Header = () => {
                         </li>
                     </ul>
                 </div>
+               
             </div>
         </nav>
     );
