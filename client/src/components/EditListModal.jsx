@@ -16,7 +16,7 @@ const EditListModal = ({ listID, currentListName, onClose }) => {
 
         setLoading(true);
         axios
-            .put(`http://localhost:5200/list/${listID}`, { name: listName })
+            .put(`http://localhost:5200/list/${listID}`, { name: listName }, { withCredentials: true })
             .then(() => {
                 setLoading(false);
                 onClose(); // Close the modal upon successful edit

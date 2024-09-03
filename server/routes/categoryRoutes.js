@@ -1,6 +1,7 @@
 import express from 'express';
 import Category from '../models/categoryModel.js';
 import Service from '../models/serviceModel.js';
+import { authentication, authorization } from '../middleware/auth.js';
 
 const router = express.Router();
 

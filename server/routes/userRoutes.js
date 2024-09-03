@@ -3,7 +3,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import multer from 'multer';
 import User from '../models/userModel.js';
-import auth from '../middleware/auth.js';
+import { authentication, authorization } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -100,7 +100,7 @@ router.get('/', async (req, res) => {
 });
 
 // Route to get user details for profile
-router.get('/profile', auth, async (req, res) => {
+router.get('/profile', authentication, authorization(['admin', 'planner', 'provider']), async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
         if (!user) {

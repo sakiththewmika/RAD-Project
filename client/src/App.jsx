@@ -7,11 +7,11 @@ import Contact from './pages/Contact';
 import Home from './pages/Home';
 import RegisterUser from './pages/RegisterUser';
 import LoginPage from './pages/LoginPage';
+import AdminLogin from './pages/AdminLogin';
 import ServicePage from './pages/ServicePage';
-import Provider from './pages/Provider';
 import ProviderDashboard from './pages/ProviderDashboard';
 import AddService from './pages/AddService';
-import EditService from './pages/EditService'
+import EditService from './pages/EditService';
 import ServiceDetails from './pages/ServiceDetails';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
@@ -22,7 +22,7 @@ import { SnackbarProvider } from 'notistack';
 import './App.css'
 const App = () => {
     const location = useLocation();
-    const hideHeaderFooter = location.pathname === '/login' || location.pathname === '/register';
+    const hideHeaderFooter = location.pathname === '/login' || location.pathname === '/register' || location.pathname === '/adminlogin';
 
     return (
         <AuthProvider>
@@ -36,6 +36,7 @@ const App = () => {
                             <Route path='/contact' element={<Contact/>}/>
                             <Route path="/register" element={<RegisterUser />} />
                             <Route path="/login" element={<LoginPage />} />
+                            <Route path="/adminlogin" element={<AdminLogin />} />
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/services" element={<ServicePage />} />
                             <Route path="/services/:id" element={<ServiceDetails />} />
