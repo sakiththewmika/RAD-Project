@@ -1,5 +1,4 @@
-import React from 'react';
-
+/* eslint-disable react/prop-types */
 const DeleteConfirmationPopup = ({ show, deleteType, onConfirm, onCancel }) => {
     if (!show) return null;
 
