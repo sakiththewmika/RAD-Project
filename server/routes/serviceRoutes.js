@@ -100,7 +100,7 @@ router.get('/', async (req, res) => {
 });
 
 //route to get all services with user details
-router.get('/details', async (req, res) => {
+router.get('/details', authentication, authorization(['admin']), async (req, res) => {
     try {
         const services = await Service.find().populate('userID', 'firstName lastName email');
         return res.status(200).send({
@@ -158,21 +158,6 @@ router.get('/cities', async (req, res) => {
         res.status(500).send({ message: error.message });
     }
 });
-
-//route to get all services by category
-// router.get('/category/:categoryName', async (req, res) => {
-//     try {
-//         const { categoryName } = req.params;
-//         const services = await Service.find({ 'category.name': categoryName });
-//         return res.status(200).send({
-//             count: services.length,
-//             data: services
-//         });
-//     } catch (error) {
-//         console.log(error.message);
-//         res.status(500).send({ message: error.message });
-//     }
-// });
 
 //route to get service by userID
 router.get('/user/:userID', authentication, authorization(['provider']), async (req, res) => {

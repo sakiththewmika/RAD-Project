@@ -71,7 +71,7 @@ const EditService = () => {
                 setEmail(res.data.email);
                 setMobile(res.data.mobile);
                 setPhone(res.data.phone);
-                setImages(res.data.images);
+                setPrevImages(res.data.images);
                 setImagesPreview(res.data.images.map((image) => 'http://localhost:5200/' + image));
                 setLoading(false);
             })

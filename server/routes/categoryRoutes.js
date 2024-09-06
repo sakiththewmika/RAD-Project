@@ -6,7 +6,7 @@ import { authentication, authorization } from '../middleware/auth.js';
 const router = express.Router();
 
 //route to save a new category
-router.post('/', async (req, res) => {
+router.post('/', authentication, authorization(['admin']), async (req, res) => {
     try {
         if (!req.body.name) {
             return res.status(400).send({ message: 'Name is required' });
@@ -53,7 +53,7 @@ router.get('/:id', async (req, res) => {
 });
 
 //route to update a category by id
-router.put('/:id', async (req, res) => {
+router.put('/:id', authentication, authorization(['admin']), async (req, res) => {
     try {
         if (!req.body.name) {
             return res.status(400).send({ message: 'Name is required' });
@@ -80,7 +80,7 @@ router.put('/:id', async (req, res) => {
 });
 
 //route to delete a category by id
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authentication, authorization(['admin']), async (req, res) => {
     try {
         const { id } = req.params;
         const deletedCategory = await Category.findByIdAndDelete(id);
