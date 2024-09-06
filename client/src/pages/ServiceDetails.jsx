@@ -67,7 +67,7 @@ const ServiceDetails = () => {
     const fetchLists = () => {
       setLoading(true);
       axios
-        .get(`http://localhost:5200/list/${user._id}`, { withCredentials: true })
+        .get(`http://localhost:5200/list`, { withCredentials: true })
         .then((res) => {
           setLists(res.data.data);
           setLoading(false);
@@ -102,7 +102,7 @@ const ServiceDetails = () => {
     event.stopPropagation();
     // setLoading(true);
     axios
-      .post(`http://localhost:5200/list/${user._id}/list/${listID}`, {serviceID}, { withCredentials: true })
+      .post(`http://localhost:5200/list/${listID}`, {serviceID}, { withCredentials: true })
       .then((res) => {
         console.log(res.data.message);
         setOpenMenuId(null);

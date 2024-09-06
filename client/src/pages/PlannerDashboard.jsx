@@ -43,7 +43,7 @@ const PlannerDashboard = () => {
 
     const fetchLists = () => {
         setLoading(true);
-        axios.get(`http://localhost:5200/list/${user._id}`, { withCredentials: true })
+        axios.get(`http://localhost:5200/list`, { withCredentials: true })
             .then((res) => {
                 setLists(res.data.data);
                 setLoading(false);

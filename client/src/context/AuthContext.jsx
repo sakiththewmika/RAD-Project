@@ -5,12 +5,28 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        axios
+            .get("http://localhost:5200/user/profile", { withCredentials: true })
+            .then((res) => {
+                setUser(res.data);
+                setLoading(false);
+            })
+            .catch((err) => {
+                if (err.response && err.response.status === 401) {
+                    setUser(null);
+                } else {
+                    console.log(err);
+                }
+                setLoading(false);
+            });
+    }, []);
 
     const login = async (email, password, role) => {
         try {
             const res = await axios.post("http://localhost:5200/login", { email, password, role }, { withCredentials: true });
-            // const user = await axios.get("http://localhost:5200/profile", { withCredentials: true });
-            // setUser(user.data);
             setUser(res.data);
         } catch (err) {
             console.log(err);
@@ -26,6 +42,10 @@ export const AuthProvider = ({ children }) => {
             console.log(err);
         }
     };
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <AuthContext.Provider value={{ user, login, logout }}>

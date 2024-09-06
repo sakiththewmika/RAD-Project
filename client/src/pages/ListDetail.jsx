@@ -16,9 +16,8 @@ const ListDetails = () => {
     const fetchListDetails = async () => {
         try {
             setLoading(true);
-            const res = await axios.get(`http://localhost:5200/list/${user._id}/${listID}`, { withCredentials: true });
+            const res = await axios.get(`http://localhost:5200/list/${listID}`, { withCredentials: true });
             setList(res.data.data);
-            console.log(res.data.count);
         } catch (err) {
             console.error(err);
         } finally {

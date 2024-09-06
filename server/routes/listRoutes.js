@@ -5,10 +5,9 @@ import { authentication, authorization } from '../middleware/auth.js';
 const router = express.Router();
 
 //route to add new list to user by userID - test passed
-router.post('/:userID', authentication, authorization(['planner']), async (req, res) => {
+router.post('/', authentication, authorization(['planner']), async (req, res) => {
     try {
-        const { userID } = req.params;
-        const user = await User.findById(userID);
+        const user = await User.findById(req.user.id);
         if (!user) {
             return res.status(404).send({ message: 'User not found' });
         }
@@ -22,10 +21,9 @@ router.post('/:userID', authentication, authorization(['planner']), async (req, 
 });
 
 //route to get all lists by userID - test passed
-router.get('/:userID', authentication, authorization(['planner']), async (req, res) => {
+router.get('/', authentication, authorization(['planner']), async (req, res) => {
     try {
-        const { userID } = req.params;
-        const user = await User.findById(userID);
+        const user = await User.findById(req.user.id);
         if (!user) {
             return res.status(404).send({ message: 'User not found' });
         }
@@ -98,11 +96,11 @@ router.post('/service/:listID', authentication, authorization(['planner']), asyn
 
 
 //route to add service to a list by listID
-router.post('/:userID/list/:listID', authentication, authorization(['planner']), async (req, res) => {
+router.post('/:listID', authentication, authorization(['planner']), async (req, res) => {
     try {
-        const { userID, listID } = req.params;
+        const { listID } = req.params;
         const { serviceID } = req.body;
-        const user = await User.findById(userID);
+        const user = await User.findById(req.user.id);
         if (!user) {
             return res.status(404).send({ message: 'User not found' });
         }
@@ -127,10 +125,10 @@ router.post('/:userID/list/:listID', authentication, authorization(['planner']),
 });
 
 //route to remove service from a list by listID
-router.delete('/:userID/list/:listID/service/:serviceID', authentication, authorization(['planner']), async (req, res) => {
+router.delete('/:listID/service/:serviceID', authentication, authorization(['planner']), async (req, res) => {
     try {
-        const { userID, listID, serviceID } = req.params;
-        const user = await User.findById(userID);
+        const { listID, serviceID } = req.params;
+        const user = await User.findById(req.user.id);
         if (!user) {
             return res.status(404).send({ message: 'User not found' });
         }
@@ -155,11 +153,11 @@ router.delete('/:userID/list/:listID/service/:serviceID', authentication, author
 });
 
 //route to get services with details in a list by listID - test passed
-router.get('/:userID/:listID', authentication, authorization(['planner']), async (req, res) => {
+router.get('/:listID', authentication, authorization(['planner']), async (req, res) => {
     try {
-        const { userID, listID } = req.params;
+        const { listID } = req.params;
 
-        const user = await User.findById(userID).populate('lists.items');
+        const user = await User.findById(req.user.id).populate('lists.items');
         if (!user) {
             return res.status(404).send({ message: 'User not found' });
         }

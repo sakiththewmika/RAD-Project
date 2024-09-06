@@ -18,7 +18,7 @@ const AddListModal = ({ onClose }) => {
 
         setLoading(true);
         axios
-            .post(`http://localhost:5200/list/${user._id}`, { name: listName }, { withCredentials: true })
+            .post(`http://localhost:5200/list`, { name: listName }, { withCredentials: true })
             .then((res) => {
                 setLoading(false);
                 onClose(); // Close the modal only if the request is successful
