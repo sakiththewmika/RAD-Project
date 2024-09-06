@@ -16,7 +16,7 @@ const ListDetails = () => {
     const fetchListDetails = async () => {
         try {
             setLoading(true);
-            const res = await axios.get(`http://localhost:5200/list/${user._id}/${listID}`);
+            const res = await axios.get(`http://localhost:5200/list/${user._id}/${listID}`, { withCredentials: true });
             setList(res.data.data);
             console.log(res.data.count);
         } catch (err) {
@@ -68,7 +68,7 @@ const ListDetails = () => {
                         onClick={() => handleCardClick(service)}
                     >
                         <div className="aspect-w-4 aspect-h-4 mb-4">
-                            <img src={service.images[0]} alt="poster" className='w-full h-full object-cover rounded' />
+                            <img src={`http://localhost:5200/${service.images[0]}`} alt="poster" className='w-full h-full object-cover rounded' />
                         </div>
                         <div className="h-auto">
                             <h5 className="text-xl font-bold tracking-tight text-gray-900">{service.title}</h5>

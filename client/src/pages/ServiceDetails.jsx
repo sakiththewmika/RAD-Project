@@ -21,7 +21,7 @@ const ServiceDetails = () => {
   const menuRef = useRef(null);
   const userID = user._id;
   const serviceID = id;
-  
+
 
   const handleRatingSelect = (rating) => {
     setRating(rating);
@@ -37,7 +37,7 @@ const ServiceDetails = () => {
     };
     console.log(data);
     axios
-      .post("http://localhost:5200/review", data)
+      .post("http://localhost:5200/review", data, { withCredentials: true })
       .then(() => {
         alert("Comment added successfully");
       })
@@ -51,7 +51,7 @@ const ServiceDetails = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get(`http://localhost:5200/service/${id}`)
+      .get(`http://localhost:5200/service/${id}`, {withCredentials: true})
       .then((res) => {
         setService(res.data);
         setMainImage(res.data.images[0]);
@@ -67,7 +67,7 @@ const ServiceDetails = () => {
     const fetchLists = () => {
       setLoading(true);
       axios
-        .get(`http://localhost:5200/list/${user._id}`)
+        .get(`http://localhost:5200/list/${user._id}`, { withCredentials: true })
         .then((res) => {
           setLists(res.data.data);
           setLoading(false);
@@ -86,7 +86,7 @@ const ServiceDetails = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get(`http://localhost:5200/review/service/${id}`)
+      .get(`http://localhost:5200/review/service/${id}`, { withCredentials: true })
       .then((res) => {
         setReviews(res.data.data);
         setLoading(false);
@@ -102,9 +102,7 @@ const ServiceDetails = () => {
     event.stopPropagation();
     // setLoading(true);
     axios
-      .post(`http://localhost:5200/list/${user._id}/list/${listID}`, {
-        serviceID,
-      })
+      .post(`http://localhost:5200/list/${user._id}/list/${listID}`, {serviceID}, { withCredentials: true })
       .then((res) => {
         console.log(res.data.message);
         setOpenMenuId(null);
@@ -163,7 +161,7 @@ const ServiceDetails = () => {
             />
           </div>
           <div className="space-y-4">
-            <div className="text-lg" dangerouslySetInnerHTML={{ __html:  DOMPurify.sanitize(service.description) }} />
+            <div className="text-lg" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(service.description) }} />
             <p className="text-lg">
               <strong>Posted by:</strong> {user.firstName} {user.lastName}
             </p>
@@ -193,12 +191,14 @@ const ServiceDetails = () => {
             </div>
           </div>
         </div>
-        <button
-          onClick={(e) => toggleMenu(service._id, e)}
-          className="absolute z-20 top-2 right-4 text-gray-600 hover:text-gray-900"
-        >
-          <p className="text-2xl font-bold">+</p>
-        </button>
+        {user.role === 'planner' && (
+          <button
+            onClick={(e) => toggleMenu(service._id, e)}
+            className="absolute z-10 top-2 right-4 text-gray-600 hover:text-gray-900"
+          >
+            <p className="text-2xl font-bold">+</p>
+          </button>
+        )}
         {openMenuId === service._id && user && (
           <div
             ref={menuRef}

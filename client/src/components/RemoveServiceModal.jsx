@@ -12,7 +12,7 @@ const RemoveServiceModal = ({ serviceID, onClose }) => {
     const handleRemoveService = () => {
         setLoading(true);
         axios
-            .delete(`http://localhost:5200/list/${user._id}/list/${listID}/service/${serviceID}`)
+            .delete(`http://localhost:5200/list/${user._id}/list/${listID}/service/${serviceID}`, { withCredentials: true })
             .then(() => {
                 setLoading(false);
                 onClose(); 

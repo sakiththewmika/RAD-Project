@@ -57,7 +57,7 @@ const EditService = () => {
     useEffect(() => {
         setLoading(true);
         axios
-            .get(`http://localhost:5200/service/${id}`)
+            .get(`http://localhost:5200/service/${id}`, { withCredentials: true })
             .then((res) => {
                 setService(res.data);
                 setTitle(res.data.title);
@@ -71,7 +71,7 @@ const EditService = () => {
                 setEmail(res.data.email);
                 setMobile(res.data.mobile);
                 setPhone(res.data.phone);
-                setImages(res.data.images);
+                setPrevImages(res.data.images);
                 setImagesPreview(res.data.images.map((image) => 'http://localhost:5200/' + image));
                 setLoading(false);
             })
@@ -279,7 +279,7 @@ const EditService = () => {
 
             try {
                 console.log(formData);
-                await axios.put(`http://localhost:5200/service/${id}`, formData);
+                await axios.put(`http://localhost:5200/service/${id}`, formData, { withCredentials: true });
                 navigate("/provider");
             }
             catch (error) {

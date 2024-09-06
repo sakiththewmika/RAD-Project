@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import multer from 'multer';
 import User from '../models/userModel.js';
-import Review from '../models/reviewModel.js';
+import { authentication, authorization } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -41,7 +41,7 @@ const upload = multer({
 router.use('/uploads', express.static(`${__dirname}/uploads`));
 
 // Route to save a new service with image upload
-router.post('/', upload.array('images', 5), async (req, res) => {
+router.post('/', authentication, authorization(['provider']), upload.array('images', 5), async (req, res) => {
     try {
         const { userID, categoryID, categoryName, typeID, typeName, description, title, email, mobile, phone, city, price } = req.body;
 
@@ -100,7 +100,7 @@ router.get('/', async (req, res) => {
 });
 
 //route to get all services with user details
-router.get('/details', async (req, res) => {
+router.get('/details', authentication, authorization(['admin']), async (req, res) => {
     try {
         const services = await Service.find().populate('userID', 'firstName lastName email');
         return res.status(200).send({
@@ -159,23 +159,8 @@ router.get('/cities', async (req, res) => {
     }
 });
 
-//route to get all services by category
-// router.get('/category/:categoryName', async (req, res) => {
-//     try {
-//         const { categoryName } = req.params;
-//         const services = await Service.find({ 'category.name': categoryName });
-//         return res.status(200).send({
-//             count: services.length,
-//             data: services
-//         });
-//     } catch (error) {
-//         console.log(error.message);
-//         res.status(500).send({ message: error.message });
-//     }
-// });
-
 //route to get service by userID
-router.get('/user/:userID', async (req, res) => {
+router.get('/user/:userID', authentication, authorization(['provider']), async (req, res) => {
     try {
         const { userID } = req.params;
         const services = await Service.find({ userID: userID });
@@ -183,14 +168,14 @@ router.get('/user/:userID', async (req, res) => {
             count: services.length,
             data: services
         });
-    } catch (error){
+    } catch (error) {
         console.log(error.message);
         res.status(500).send({ message: error.message })
     }
 });
 
 //route to get a service by id
-router.get('/:id', async (req, res) => {
+router.get('/:id', authentication, authorization(['admin','planner', 'provider']), async (req, res) => {
     try {
         const { id } = req.params;
         const service = await Service.findById(id);
@@ -206,7 +191,7 @@ router.get('/:id', async (req, res) => {
 });
 
 //route to update a service by id
-router.put('/:id', upload.array('images', 5), async (req, res) => {
+router.put('/:id', authentication, authorization(['provider']), upload.array('images', 5), async (req, res) => {
     try {
         const { userID, categoryID, categoryName, typeID, typeName, description, title, email, mobile, phone, city, price } = req.body;
 
@@ -219,7 +204,7 @@ router.put('/:id', upload.array('images', 5), async (req, res) => {
         if (req.files && req.files.length > 0) {
             images = req.files.map(file => file.path); // Store file paths in images array
         }
-        
+
         const { id } = req.params;
         const service = {
             userID,
@@ -255,7 +240,7 @@ router.put('/:id', upload.array('images', 5), async (req, res) => {
 });
 
 //route to delete a service by id and remove it from all lists
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authentication, authorization(['admin', 'provider']), async (req, res) => {
     try {
         const { id } = req.params;
         const deletedService = await Service.findByIdAndDelete(id);
