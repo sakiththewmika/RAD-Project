@@ -120,7 +120,7 @@ router.get('/profile', authentication, authorization(['admin', 'planner', 'provi
     }
 });
 
-//route to get a user by id
+// route to get a user by id
 // router.get('/:id', async (req, res) => {
 //     try {
 //         const { id } = req.params;
@@ -137,13 +137,11 @@ router.get('/profile', authentication, authorization(['admin', 'planner', 'provi
 // });
 
 //route to update a user by id
-router.put('/:id', async (req, res) => {
+router.put('/name/:id', authentication, authorization(['planner', 'provider', 'admin']), async (req, res) => {
     try {
         if (
             !req.body.firstName ||
-            !req.body.lastName ||
-            !req.body.email ||
-            !req.body.role
+            !req.body.lastName
         ) {
             return res.status(400).send({ message: 'All fields are required' });
         }
@@ -164,15 +162,22 @@ router.put('/:id', async (req, res) => {
 //route to update user password by id
 router.put('/password/:id', authentication, authorization(['planner', 'provider', 'admin']), async (req, res) => {
     try {
-        if (!req.body.password) {
+        const { password } = req.body;
+        const { id } = req.params;
+
+        if (!password) {
             return res.status(400).send({ message: 'Password is required' });
         }
-        const { id } = req.params;
-        const result = await User.findByIdAndUpdate(id, { password: req.body.password });
+        // Find the user by id
+        const user = await User.findById(id);
 
-        if (!result) {
+        if (!user) {
             return res.status(404).send({ message: 'User not found' });
         }
+        // Set the new password and save the user (triggers pre-save middleware)
+        user.password = password;
+        await user.save();
+
         return res.status(200).send({ message: 'Password updated successfully' });
 
     } catch (error) {
@@ -181,27 +186,28 @@ router.put('/password/:id', authentication, authorization(['planner', 'provider'
     }
 });
 
+
 //route to change user email by previous email and role
-router.put('/email', authentication, authorization(['planner', 'provider', 'admin']), async (req, res) => {
-    try {
-        if (!req.body.email || !req.body.newEmail || !req.body.role) {
-            return res.status(400).send({ message: 'Email and role are required' });
-        }
-        const result = await User.findOneAndUpdate(
-            { email: req.body.email, role: req.body.role },
-            { email: req.body.newEmail }
-        );
+// router.put('/email', authentication, authorization(['planner', 'provider', 'admin']), async (req, res) => {
+//     try {
+//         if (!req.body.email || !req.body.newEmail || !req.body.role) {
+//             return res.status(400).send({ message: 'Email and role are required' });
+//         }
+//         const result = await User.findOneAndUpdate(
+//             { email: req.body.email, role: req.body.role },
+//             { email: req.body.newEmail }
+//         );
 
-        if (!result) {
-            return res.status(404).send({ message: 'User not found' });
-        }
-        return res.status(200).send({ message: 'Email updated successfully' });
+//         if (!result) {
+//             return res.status(404).send({ message: 'User not found' });
+//         }
+//         return res.status(200).send({ message: 'Email updated successfully' });
 
-    } catch (error) {
-        console.log(error.message);
-        res.status(500).send({ message: error.message });
-    }
-});
+//     } catch (error) {
+//         console.log(error.message);
+//         res.status(500).send({ message: error.message });
+//     }
+// });
 
 //route to delete a user by id
 router.delete('/:id', authentication, authorization(['planner', 'provider', 'admin']), async (req, res) => {
