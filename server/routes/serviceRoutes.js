@@ -160,10 +160,9 @@ router.get('/cities', async (req, res) => {
 });
 
 //route to get service by userID
-router.get('/user/:userID', authentication, authorization(['provider']), async (req, res) => {
+router.get('/user', authentication, authorization(['provider']), async (req, res) => {
     try {
-        const { userID } = req.params;
-        const services = await Service.find({ userID: userID });
+        const services = await Service.find({ userID: req.user.id });
         return res.status(200).send({
             count: services.length,
             data: services

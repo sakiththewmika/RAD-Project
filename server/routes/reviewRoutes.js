@@ -59,10 +59,9 @@ router.get('/service/:id', authentication, authorization(['provider', 'admin', '
     }
 })
 //Route to get all the reviews by userID
-router.get('/myReviews/:userID', authentication, authorization(['planner']), async (req, res) => {
+router.get('/myReviews', authentication, authorization(['planner']), async (req, res) => {
     try {
-        const { userID } = req.params;
-        const reviews = await Review.find({ userID }).populate('serviceID', 'title');
+        const reviews = await Review.find({ userID : req.user.id }).populate('serviceID', 'title');
         return res.status(200).send({
             count: reviews.length,
             data: reviews

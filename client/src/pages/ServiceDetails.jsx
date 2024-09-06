@@ -5,7 +5,7 @@ import StarRating from "../components/StarRating";
 import { useAuth } from "../context/AuthContext";
 import AddRating from "../components/AddRating";
 import DOMPurify from 'dompurify';
-import {useSnackbar} from 'notistack';
+import { useSnackbar } from 'notistack';
 const ServiceDetails = () => {
   const { id } = useParams(); // Get the service ID from the URL
   const [service, setService] = useState(null);
@@ -21,34 +21,31 @@ const ServiceDetails = () => {
   const menuRef = useRef(null);
   const userID = user._id;
   const serviceID = id;
-  const {enqueueSnackbar}=useSnackbar();
+  const { enqueueSnackbar } = useSnackbar();
 
-const navigate=useNavigate();
+  const navigate = useNavigate();
   const handleRatingSelect = (rating) => {
     setRating(rating);
   };
 
 
   //Save the newly added comment
-  const handleSaveComment = () => {
+  const handleSaveComment = (e) => {
+    e.preventDefault();
     const data = {
       userID,
       serviceID,
       rating,
       comment,
     };
-    console.log(data);
     axios
       .post("http://localhost:5200/review", data, { withCredentials: true })
       .then(() => {
-        alert("Comment added successfully");
-        enqueueSnackbar('Reviews added successfully',{variant:'success'});
-        // navigate(`/services`);
-      
+        enqueueSnackbar('Reviews added successfully', { variant: 'success' });
+        fetchReviews();
       })
       .catch((error) => {
-        alert("Error happened");
-        enqueueSnackbar("Error Occured",{variant:'error'})
+        enqueueSnackbar("Error Occured", { variant: 'error' })
         console.log(error);
       });
   };
@@ -57,7 +54,7 @@ const navigate=useNavigate();
   useEffect(() => {
     setLoading(true);
     axios
-      .get(`http://localhost:5200/service/${id}`, {withCredentials: true})
+      .get(`http://localhost:5200/service/${id}`, { withCredentials: true })
       .then((res) => {
         setService(res.data);
         setMainImage(res.data.images[0]);
@@ -89,18 +86,22 @@ const navigate=useNavigate();
   }, [user]);
 
   //fetch the reviews for the service
-  useEffect(() => {
-    setLoading(true);
+  const fetchReviews = () => {
+    setReviewsLoading(true);
     axios
       .get(`http://localhost:5200/review/service/${id}`, { withCredentials: true })
       .then((res) => {
         setReviews(res.data.data);
-        setLoading(false);
+        setReviewsLoading(false);
       })
       .catch((err) => {
         console.error(err);
-        setLoading(false);
+        setReviewsLoading(false);
       });
+  };
+
+  useEffect(() => {
+    fetchReviews();
   }, [id]);
 
   // Handle adding service to a list
@@ -108,7 +109,7 @@ const navigate=useNavigate();
     event.stopPropagation();
     // setLoading(true);
     axios
-      .post(`http://localhost:5200/list/${listID}`, {serviceID}, { withCredentials: true })
+      .post(`http://localhost:5200/list/${listID}`, { serviceID }, { withCredentials: true })
       .then((res) => {
         console.log(res.data.message);
         setOpenMenuId(null);
@@ -155,7 +156,7 @@ const navigate=useNavigate();
 
   return (
     <div className="container mx-auto p-8">
-      <div className="relative shadow-lg bg-gray-100 rounded-lg p-6">
+      <div className="relative shadow-lg bg-white/80 rounded-lg p-6">
         <h1 className="text-4xl font-bold mb-4">{service.title}</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -228,39 +229,39 @@ const navigate=useNavigate();
       <div className="mt-8 bg-white shadow-lg rounded-lg p-6">
         <div className="mt-5">
           <h2 className="text-2xl font-bold mb-4 mt-5">Reviews</h2>
-                   
-          {user.role ==='planner' ?(
-                <div className="flex items-center">
-                <div className="mt-2 mb-2 w-1/6 flex items-center justify-center">
-                  <AddRating onRatingSelect={handleRatingSelect}/>
-                </div>
-                <div className="w-5/6">
-                  <form>
-                    <label className="sr-only">Your message</label>
-                    <div className="flex items-center px-3 py-2 rounded-lg ">
-                      <textarea
-                        id="chat"
-                        rows="1"
-                        className="block mx-4 p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-green-500 focus:border-green-500 "
-                        placeholder="Your Comment..."
-                        onChange={(e) => setComment(e.target.value)}
-                      ></textarea>
-                      <button onClick={handleSaveComment} type="submit" className="inline-flex justify-center p-2 text-green-600 rounded-full cursor-pointer hover:bg-green-100">
-                <svg className="w-5 h-5 rotate-90 rtl:-rotate-90" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
-                    <path d="m17.914 18.594-8-18a1 1 0 0 0-1.828 0l-8 18a1 1 0 0 0 1.157 1.376L8 18.281V9a1 1 0 0 1 2 0v9.281l6.758 1.689a1 1 0 0 0 1.156-1.376Z"
-            
-            
-            />
+
+          {user.role === 'planner' ? (
+            <div className="flex items-center">
+              <div className="mt-2 mb-2 w-1/6 flex items-center justify-center">
+                <AddRating onRatingSelect={handleRatingSelect} />
+              </div>
+              <div className="w-5/6">
+                <form>
+                  <label className="sr-only">Your message</label>
+                  <div className="flex items-center px-3 py-2 rounded-lg ">
+                    <textarea
+                      id="chat"
+                      rows="1"
+                      className="block mx-4 p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-green-500 focus:border-green-500 "
+                      placeholder="Your Comment..."
+                      onChange={(e) => setComment(e.target.value)}
+                    ></textarea>
+                    <button onClick={(e) => handleSaveComment(e)} className="inline-flex justify-center p-2 text-green-600 rounded-full cursor-pointer hover:bg-green-100">
+                      <svg className="w-5 h-5 rotate-90 rtl:-rotate-90" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
+                        <path d="m17.914 18.594-8-18a1 1 0 0 0-1.828 0l-8 18a1 1 0 0 0 1.157 1.376L8 18.281V9a1 1 0 0 1 2 0v9.281l6.758 1.689a1 1 0 0 0 1.156-1.376Z"
+
+
+                        />
                       </svg>
                       <span className="sr-only" >Send message</span>
-            
-            </button>
-                    </div>
-                  </form>
-                </div>
+
+                    </button>
+                  </div>
+                </form>
               </div>
-          ):(<span> </span>)}
-        
+            </div>
+          ) : (<span> </span>)}
+
 
           {reviews.map((review, index) => (
             <div
@@ -294,7 +295,7 @@ const navigate=useNavigate();
               </ol>
             </div>
           ))}
-         
+
         </div>
       </div>
     </div>

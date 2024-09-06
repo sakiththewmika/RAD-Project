@@ -46,7 +46,6 @@ const PlannerDashboard = () => {
             .then(()=>{
                 enqueueSnackbar('Review Deleted Successfully',{variant:'success'});
                 reloadReviews();
-                navigate('/planner')
             })
             .catch((error)=>{
                 alert("Error Occured");
@@ -71,15 +70,17 @@ const PlannerDashboard = () => {
         fetchLists();
     }, [user._id]);
 
-    useEffect(()=>{
-        axios
-          .get(`http://localhost:5200/review/myReviews/${user._id}`, { withCredentials: true })
-          .then((response)=>{
+    const reloadReviews = async () => {
+        try {
+            const response = await axios.get(`http://localhost:5200/review/myReviews`, { withCredentials: true });
             setReviews(response.data.data);
-          })
-          .catch((error)=>{
-            console.log(error)
-          })
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(()=>{
+        reloadReviews();
       },[])
 
     useEffect(() => {
@@ -162,7 +163,7 @@ const PlannerDashboard = () => {
                             <h3 className="text-xl text-center font-semibold mb-2">{list.name}</h3>
                         </div>
                         {openMenuId === list._id && (
-                            <div ref={menuRef} className="absolute top-6 -right-14 mt-2 w-auto bg-white rounded-md shadow-lg z-10">
+                            <div ref={menuRef} className="absolute top-6 -right-10 mt-2 w-auto bg-white rounded-md shadow-lg z-10">
                                 <ul>
                                     <li
                                         onClick={() => handleEditListCardClick(list._id, list.name)}

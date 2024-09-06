@@ -18,7 +18,7 @@ const ProviderDashboard = () => {
 
     const fetchServices = async () => {
         try {
-            const res = await axios.get(`http://localhost:5200/service/user/${user._id}`, { withCredentials: true });
+            const res = await axios.get(`http://localhost:5200/service/user`, { withCredentials: true });
             setServices(res.data.data);
             setLoading(false);
         } catch (error) {

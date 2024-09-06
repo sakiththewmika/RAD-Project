@@ -137,7 +137,7 @@ router.get('/profile', authentication, authorization(['admin', 'planner', 'provi
 // });
 
 //route to update a user by id
-router.put('/name/:id', authentication, authorization(['planner', 'provider', 'admin']), async (req, res) => {
+router.put('/name', authentication, authorization(['planner', 'provider', 'admin']), async (req, res) => {
     try {
         if (
             !req.body.firstName ||
@@ -145,8 +145,7 @@ router.put('/name/:id', authentication, authorization(['planner', 'provider', 'a
         ) {
             return res.status(400).send({ message: 'All fields are required' });
         }
-        const { id } = req.params;
-        const result = await User.findByIdAndUpdate(id, req.body);
+        const result = await User.findByIdAndUpdate(req.user.id, req.body);
 
         if (!result) {
             return res.status(404).send({ message: 'User not found' });
@@ -160,16 +159,15 @@ router.put('/name/:id', authentication, authorization(['planner', 'provider', 'a
 });
 
 //route to update user password by id
-router.put('/password/:id', authentication, authorization(['planner', 'provider', 'admin']), async (req, res) => {
+router.put('/password', authentication, authorization(['planner', 'provider', 'admin']), async (req, res) => {
     try {
         const { password } = req.body;
-        const { id } = req.params;
 
         if (!password) {
             return res.status(400).send({ message: 'Password is required' });
         }
         // Find the user by id
-        const user = await User.findById(id);
+        const user = await User.findById(req.user.id);
 
         if (!user) {
             return res.status(404).send({ message: 'User not found' });
@@ -210,10 +208,9 @@ router.put('/password/:id', authentication, authorization(['planner', 'provider'
 // });
 
 //route to delete a user by id
-router.delete('/:id', authentication, authorization(['planner', 'provider', 'admin']), async (req, res) => {
+router.delete('/', authentication, authorization(['planner', 'provider', 'admin']), async (req, res) => {
     try {
-        const { id } = req.params;
-        const result = await User.findByIdAndDelete(id);
+        const result = await User.findByIdAndDelete(req.user.id);
 
         if (!result) {
             return res.status(404).send({ message: 'User not found' });
