@@ -27,12 +27,25 @@ const PlannerDashboard = () => {
     const [reviewID,setReviewID]=useState(null);
     const navigate = useNavigate();
     const [delReviewID,setDelReviewID]=useState(null);
-   
+    
+      //reload page
+//   const reloadReviews = async () => {
+//     try {
+//         const response = await axios.get(`http://localhost:5200/review/${serviceID}`, { withCredentials: true });
+//         setReviews(response.data.data);
+        
+//     } catch (error) {
+//         console.error(error);
+//     }
+// }
+
     //delete review
     const handleReviewDelete=(reviewID)=>{
         axios
             .delete(`http://localhost:5200/review/${reviewID}`, { withCredentials: true })
             .then(()=>{
+                enqueueSnackbar('Review Deleted Successfully',{variant:'success'});
+                reloadReviews();
                 navigate('/planner')
             })
             .catch((error)=>{

@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import StarRating from "../components/StarRating";
 import { useAuth } from "../context/AuthContext";
 import AddRating from "../components/AddRating";
 import DOMPurify from 'dompurify';
-
+import {useSnackbar} from 'notistack';
 const ServiceDetails = () => {
   const { id } = useParams(); // Get the service ID from the URL
   const [service, setService] = useState(null);
@@ -21,11 +21,13 @@ const ServiceDetails = () => {
   const menuRef = useRef(null);
   const userID = user._id;
   const serviceID = id;
+  const {enqueueSnackbar}=useSnackbar();
 
-
+const navigate=useNavigate();
   const handleRatingSelect = (rating) => {
     setRating(rating);
   };
+
 
   //Save the newly added comment
   const handleSaveComment = () => {
@@ -40,9 +42,13 @@ const ServiceDetails = () => {
       .post("http://localhost:5200/review", data, { withCredentials: true })
       .then(() => {
         alert("Comment added successfully");
+        enqueueSnackbar('Reviews added successfully',{variant:'success'});
+        // navigate(`/services`);
+      
       })
       .catch((error) => {
         alert("Error happened");
+        enqueueSnackbar("Error Occured",{variant:'error'})
         console.log(error);
       });
   };

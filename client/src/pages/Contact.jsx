@@ -13,7 +13,7 @@ const Contact = () => {
           
           
           
-          <div className="flex-1">
+          <div className="flex flex-1 justify-center items-center">
             <ol className="divider-gray-200">
               <li>
                 <a
@@ -36,13 +36,13 @@ const Contact = () => {
           </div>
       </div>
       {/* Email address */}
-      <div className="fly-in mb-4 border border-gray-100 rounded-lg bg-gray-50 flex w-8/12 md:w-5/12 p-4">
+      <div className="fly-in mb-4 border border-gray-100 rounded-lg bg-gray-50 flex w-8/12 md:w-5/12">
       <div className="w-full md:w-1/2 flex justify-center items-center h-full">
         <div className="w-3/4 max-w-md mx-auto">
           <img src="./assets/email.png" alt="About Us" className="w-full h-auto fade-in" />
         </div>
       </div>
-          <div className="flex-1">
+          <div className="flex flex-1 justify-center items-center">
             <ol className="divider-gray-200">
               <li>
                 <a
@@ -52,11 +52,11 @@ const Contact = () => {
                   <div className="text-gray-600">
                     <div className="text-base font-normal">
                       <span className="font-medium text-gray-900">
-                        Commited To Excellence
+                        Contact Us Via Email
                       </span>
                     </div>
                     <div className="text-md font-normal">
-                    At EventEase, we are dedicated to delivering excellence in every aspect of event management.
+                    eventease.support@gmail.com
                     </div>
                   </div>
                 </a>
@@ -65,13 +65,13 @@ const Contact = () => {
           </div>
       </div>
       {/* address */}
-      <div className="fly-in mb-4 border border-gray-100 rounded-lg bg-gray-50 flex w-8/12 md:w-5/12 p-4">
+      <div className="fly-in mb-4 border border-gray-100 rounded-lg bg-gray-50 flex w-8/12 md:w-5/12">
       <div className="w-full md:w-1/2 flex justify-center items-center h-full">
         <div className="w-3/4 max-w-md mx-auto">
           <img src="./assets/visit.png" alt="About Us" className="w-full h-auto fade-in" />
         </div>
       </div>
-          <div className="flex-1">
+          <div className="flex flex-1 justify-center items-center">
             <ol className="divider-gray-200">
               <li>
                 <a
@@ -81,11 +81,11 @@ const Contact = () => {
                   <div className="text-gray-600">
                     <div className="text-base font-normal">
                       <span className="font-medium text-gray-900">
-                        Commited To Excellence
+                        Visit Us for Further Inquiries
                       </span>
                     </div>
                     <div className="text-md font-normal">
-                    At EventEase, we are dedicated to delivering excellence in every aspect of event management.
+                      No.32/A, Queen's Road, Rajagiriya
                     </div>
                   </div>
                 </a>
@@ -97,4 +97,4 @@ const Contact = () => {
   )
 }
 
-export default Contact
+export default Contact;
