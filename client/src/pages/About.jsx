@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import '../App.css';
 const About = () => {
+ 
+
   return (
-    <div className="flex flex-col md:flex-row p-6 md:p-16" id="about">
+    <div 
+      className="flex flex-col md:flex-row p-6 md:p-16" 
+      id="about">
       <div className="w-full md:w-1/2 flex justify-center items-center h-full">
         <div className="w-3/4 max-w-md mx-auto">
           <img src="./assets/aboutUs.png" alt="About Us" className="w-full h-auto fade-in" />

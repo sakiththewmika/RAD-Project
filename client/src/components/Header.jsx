@@ -115,11 +115,11 @@ const Header = () => {
                     <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg w-full md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:ml-auto">
                         <li>
                             <Link to="/" onClick={handleNavCollapse} className={`block text-lg py-2 px-3 rounded md:p-0 ${location.pathname === '/' ? 'bg-teal-500 md:bg-transparent md:text-teal-700' : ' text-black hover:bg-teal-500/40 md:hover:bg-transparent md:bg-transparent md:hover:text-teal-700'}`} aria-current={location.pathname === '/' ? 'home page' : undefined}>
-                                Home
+                                <a href="#home">Home</a>
                             </Link>
                         </li>
                         <li>
-                            <Link to="/about" id="aboutUsSection"onClick={handleNavCollapse} className={`block text-lg py-2 px-3 rounded md:p-0 ${location.pathname === '/about' ? 'bg-teal-500 md:bg-transparent md:text-teal-700' : ' text-black hover:bg-teal-500/40 md:hover:bg-transparent md:bg-transparent md:hover:text-teal-700'}`} aria-current={location.pathname === '/about' ? 'about page' : undefined}>
+                            <Link to="/about" onClick={handleNavCollapse} className={`block text-lg py-2 px-3 rounded md:p-0 ${location.pathname === '/about' ? 'bg-teal-500 md:bg-transparent md:text-teal-700' : ' text-black hover:bg-teal-500/40 md:hover:bg-transparent md:bg-transparent md:hover:text-teal-700'}`} aria-current={location.pathname === '/about' ? 'about page' : undefined}>
                                 About
                             </Link>
                         </li>
