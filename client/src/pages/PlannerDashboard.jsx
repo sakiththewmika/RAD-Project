@@ -45,7 +45,7 @@ const PlannerDashboard = () => {
             .delete(`http://localhost:5200/review/${reviewID}`, { withCredentials: true })
             .then(()=>{
                 enqueueSnackbar('Review Deleted Successfully',{variant:'success'});
-                reloadReviews();
+                // reloadReviews();
                 navigate('/planner')
             })
             .catch((error)=>{
