@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const LoginPage = () => {
@@ -12,7 +12,7 @@ const LoginPage = () => {
     const [passwordError, setPasswordError] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const { login  } = useAuth();
+    const { login } = useAuth();
 
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -63,7 +63,7 @@ const LoginPage = () => {
             await login(email, password, role);
             if (role === "planner") {
                 navigate("/services");
-            } else {    
+            } else {
                 navigate("/provider");
             }
         } catch (err) {
@@ -84,7 +84,11 @@ const LoginPage = () => {
             </button>
             <div className="w-full md:w-1/2 flex justify-center items-center bg-transparent h-full">
                 <div className="w-3/4 max-w-md mx-auto">
-                    <img src='/assets/login2.png' alt="Login" className="w-full mx-auto" />
+                    {!isProvider ? (
+                        <img src='/assets/login1.png' alt="Login" className="w-full mx-auto" />
+                    ) : (
+                        <img src='/assets/login2.png' alt="Login" className="w-full mx-auto" />
+                    )}
                 </div>
             </div>
             <div className="w-full md:w-1/2 flex justify-center items-center bg-white h-full drop-shadow-2xl">
@@ -115,7 +119,7 @@ const LoginPage = () => {
                             className={`border-2 rounded-md px-4 py-1.5 w-full focus:ring-[#139086] focus:border-[#139086] ${emailError ? "border-red-500" : "border-[#0F766E]"
                                 }`}
                         />
-                    {emailError && <p className="text-red-500 mb-4">{emailError}</p>}
+                        {emailError && <p className="text-red-500 mb-4">{emailError}</p>}
                     </div>
                     <div className="my-4">
                         <label className="block text-lg  text-gray-500">Password</label>
@@ -126,7 +130,7 @@ const LoginPage = () => {
                             className={`border-2 rounded-md px-4 py-1.5 w-full focus:ring-[#139086] focus:border-[#139086] ${passwordError ? "border-red-500" : "border-[#0F766E]"
                                 }`}
                         />
-                    {passwordError && <p className="text-red-500 mb-4">{passwordError}</p>}
+                        {passwordError && <p className="text-red-500 mb-4">{passwordError}</p>}
                     </div>
                     <button
                         onClick={handleLogin}
@@ -137,7 +141,12 @@ const LoginPage = () => {
                     </button>
                     {error && <p className="text-red-500 mb-4">{error}</p>}
                     <div className="mt-4 text-center">
-                        <p className="text-gray-500 text-lg">Don't have an account? <a href="/register" className="text-[#0F766E] hover:text-[#0E6C64]">Sign up</a></p>
+                        <p className="text-gray-500 text-lg">
+                            Don't have an account?
+                            <Link to="/register" className="text-[#0F766E] font-semibold">
+                                Sign Up
+                            </Link>
+                        </p>
                     </div>
                 </div>
             </div>

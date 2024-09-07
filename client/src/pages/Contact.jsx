@@ -7,12 +7,9 @@ const Contact = () => {
       <div className="fly-in mb-4 border border-gray-100 rounded-lg bg-gray-50 flex w-8/12 md:w-5/12">
       <div className="w-full md:w-1/2 flex justify-center items-center h-full">
         <div className="w-3/4 max-w-md mx-auto">
-          <img src="./assets/call.png" alt="About Us" className="w-full h-auto fade-in" />
+          <img src="./assets/call1.png" alt="About Us" className="w-full h-auto fade-in" />
         </div>
       </div>
-          
-          
-          
           <div className="flex flex-1 justify-center items-center">
             <ol className="divider-gray-200">
               <li>

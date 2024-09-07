@@ -72,7 +72,7 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
             mobile,
             role,
             lists,
-            profilePhoto: req.file ? req.file.path : null // Save file path if uploaded
+            profilePhoto: req.file ? req.file.path : "uploads/Profile.png" // Save file path if uploaded
 
         });
 

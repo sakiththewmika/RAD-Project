@@ -27,17 +27,6 @@ const PlannerDashboard = () => {
     const [reviewID,setReviewID]=useState(null);
     const navigate = useNavigate();
     const [delReviewID,setDelReviewID]=useState(null);
-    
-      //reload page
-//   const reloadReviews = async () => {
-//     try {
-//         const response = await axios.get(`http://localhost:5200/review/${serviceID}`, { withCredentials: true });
-//         setReviews(response.data.data);
-        
-//     } catch (error) {
-//         console.error(error);
-//     }
-// }
 
     //delete review
     const handleReviewDelete=(reviewID)=>{
@@ -116,7 +105,6 @@ const PlannerDashboard = () => {
         setSelectedListID(null);
         setSelectedListName('');
         setIsEditListModalOpen(false);
-        enqueueSnackbar('List updated successfully', { variant: 'success' });
         fetchLists(); // Refresh the lists after editing
     };
 
@@ -128,7 +116,6 @@ const PlannerDashboard = () => {
     const closeDeleteModal = () => {
         setSelectedListID(null);
         setIsDeleteListModalOpen(false);
-        enqueueSnackbar('List deleted successfully', { variant: 'success' });
         fetchLists(); // Refresh the lists after deleting
     };
 
@@ -243,12 +230,6 @@ const PlannerDashboard = () => {
                 </ol>
                 </div>
                 <div className='flex flex-1 justify-end items-center'>
-               
-
-
-
-
-
                 <MdOutlineDelete className='text-2xl text-red-600 hover:cursor-pointer'  onClick={()=>handleReviewDelete(review._id)} />
                 </div>
                 

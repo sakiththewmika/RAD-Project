@@ -141,7 +141,7 @@ const RegisterUser = () => {
             </button>
             <div className="hidden md:flex w-full md:w-2/5 justify-center items-center bg-transparent h-full ">
                 <div className="w-3/4 max-w-md mx-auto">
-                    <img src='/assets/login2.png' alt="Login" className="w-full mx-auto" />
+                    <img src='/assets/Signup1.png' alt="Login" className="w-full mx-auto" />
                 </div>
             </div>
             <div className="w-full md:w-3/5 flex justify-center items-center bg-white h-full drop-shadow-2xl">
@@ -261,6 +261,11 @@ const RegisterUser = () => {
                     </p>
                 </div>
             </div>
+            {/* <div className="hidden md:flex w-full md:w-1/5 justify-center items-center bg-transparent h-full ">
+                <div className="w-3/4 max-w-md mx-auto">
+                    <img src='/assets/Signup1.png' alt="Login" className="w-full mx-auto" />
+                </div>
+            </div> */}
         </div>
     );
 };

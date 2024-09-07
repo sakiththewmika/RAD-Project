@@ -1,32 +1,34 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 
-const EditListModal = ({ listID, currentListName, onClose }) => {
-    const [listName, setListName] = useState(currentListName);
+const ChangePasswordModal = ({ onClose }) => {
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
 
-    const handleEditList = (e) => {
-        e.preventDefault();
-
-        if (!listName) {
-            setError('List name is required');
+    const handleEditUser = (e) => {
+        if (!password || !confirmPassword) {
+            setError('All fields are required');
             return;
         }
 
         setLoading(true);
         axios
-            .put(`http://localhost:5200/list/${listID}`, { name: listName }, { withCredentials: true })
+            .put(`http://localhost:5200/user/password`, { password }, { withCredentials: true })
             .then(() => {
                 setLoading(false);
-                enqueueSnackbar('List name updated successfully', { variant: 'success' });
-                onClose(); // Close the modal upon successful edit
+                navigate('/login');
+                enqueueSnackbar('Password updated successfully', { variant: 'success' });
+                onClose();
             })
             .catch((err) => {
                 setLoading(false);
-                setError('An error occurred while editing the list');
+                setError('An error occurred while editing the user');
             });
     };
 
@@ -44,16 +46,24 @@ const EditListModal = ({ listID, currentListName, onClose }) => {
                 >
                     &times;
                 </button>
-                <h2 className="text-2xl font-semibold mb-4">Edit List Name</h2>
+                <h2 className="text-2xl font-semibold mb-4">Change Password</h2>
                 {error && <p className="text-red-600 mb-4">{error}</p>}
-                <form onSubmit={handleEditList}>
-                    <label className="block mb-2">List Name</label>
+                <form onSubmit={handleEditUser}>
+                    <label className="block mb-2">New Password</label>
                     <input
-                        type="text"
-                        value={listName}
-                        onChange={(e) => setListName(e.target.value)}
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         className="w-full p-2 border rounded-lg mb-4"
-                        placeholder={'List Name'}
+                        placeholder={'Password'}
+                    />
+                    <label className="block mb-2">Confirm New Password</label>
+                    <input
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        className="w-full p-2 border rounded-lg mb-4"
+                        placeholder={'Confirm Password'}
                     />
                     <button
                         type="submit"
@@ -67,4 +77,4 @@ const EditListModal = ({ listID, currentListName, onClose }) => {
     );
 };
 
-export default EditListModal;
+export default ChangePasswordModal;
