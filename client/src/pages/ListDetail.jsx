@@ -72,7 +72,7 @@ const ListDetails = () => {
                         <div className="h-auto">
                             <h5 className="text-xl font-bold tracking-tight text-gray-900">{service.title}</h5>
                             <p className="font-normal text-gray-700">Location : {service.city}</p>
-                            <p className="font-normal text-gray-700">Price : {service.price}</p>
+                            <p className="font-normal text-gray-700">Starting From : Rs. {service.price}</p>
                         </div>
                         <button
                             onClick={(e) => handleRemoveService(service._id, e)}

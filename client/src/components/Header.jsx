@@ -5,7 +5,7 @@ import { useSnackbar } from "notistack";
 import DeleteUserModal from "./DeleteUserModal";
 import EditUserNameModal from "./EditUserNameModal";
 import ChangePasswordModal from "./ChangePasswordModal";
-
+import { BsPencilSquare } from "react-icons/bs";
 const Header = () => {
     const [isNavCollapsed, setIsNavCollapsed] = useState(true);
     const { user, logout } = useAuth();
@@ -98,6 +98,9 @@ const Header = () => {
                                     <span className="block text-sm text-gray-700">{user.firstName} {user.lastName}</span>
                                     <span className="block text-sm text-gray-500 truncate">{user.email}</span>
                                     <span className="block text-sm text-gray-400 truncate">{user.role.charAt(0).toUpperCase() + user.role.slice(1)}</span>
+                                    <div className="flex justify-end">
+                                    <BsPencilSquare />
+                                    </div>
                                 </div>
                                 <ul aria-labelledby="user-menu-button">
                                     <li>

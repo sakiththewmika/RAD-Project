@@ -217,7 +217,7 @@ const PlannerDashboard = () => {
                       <div className="text-gray-600 ">
                         <div className="text-base font-normal">
                           <span className="font-medium text-gray-900">
-                            {review.serviceID.title} 
+                            {/* {review.title}  */}
                           </span>
                         </div>
                         <div className="text-md font-normal">

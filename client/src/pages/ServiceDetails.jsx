@@ -32,22 +32,29 @@ const ServiceDetails = () => {
   //Save the newly added comment
   const handleSaveComment = (e) => {
     e.preventDefault();
+    if(comment===""){
+      enqueueSnackbar('Please add a Comment', { variant: 'error' })
+    }else{
     const data = {
       userID,
       serviceID,
       rating,
       comment,
-    };
+    }
     axios
-      .post("http://localhost:5200/review", data, { withCredentials: true })
-      .then(() => {
-        enqueueSnackbar('Reviews added successfully', { variant: 'success' });
-        fetchReviews();
-      })
-      .catch((error) => {
-        enqueueSnackbar("Error Occured", { variant: 'error' })
-        console.log(error);
-      });
+    .post("http://localhost:5200/review", data, { withCredentials: true })
+    .then(() => {
+      enqueueSnackbar('Reviews added successfully', { variant: 'success' });
+      fetchReviews();
+      setComment('');
+      
+    })
+    .catch((error) => {
+      enqueueSnackbar("Error Occured", { variant: 'error' })
+      console.log(error);
+    });
+  };
+   
   };
 
   // Fetch the service details from the server
@@ -169,21 +176,28 @@ const ServiceDetails = () => {
           </div>
           <div className="space-y-4">
             <div className="text-lg" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(service.description) }} />
-            <p className="text-lg">
-              <strong>Posted by:</strong> {user.firstName} {user.lastName}
+            <p className="text-lg mt-5">
+              <strong>Starting From:</strong> Rs.{service.price}
             </p>
             <p className="text-lg">
               <strong>Category:</strong> {service.category.name}
             </p>
             <p className="text-lg">
-              <strong>Type:</strong> {service.type.name}
+              <strong>Best For:</strong> {service.type.name} <label>Type Events</label>
             </p>
             <p className="text-lg">
-              <strong>Location:</strong> {service.city}
+              <strong>We are based around:</strong> {service.city}
             </p>
             <p className="text-lg">
-              <strong>Price:</strong> {service.price}
+              <strong>Contact Us :</strong> {service.mobile}
             </p>
+            <p className="text-lg">
+              <strong>Email Us :</strong> {service.email}
+            </p>
+            <p className="text-s mt-5">
+              <label>Posted by:</label> {user.firstName} {user.lastName}
+            </p>
+            
             <div className="grid grid-cols-5 gap-4">
               {service.images.map((image, index) => (
                 <div key={index}>
@@ -244,6 +258,7 @@ const ServiceDetails = () => {
                       rows="1"
                       className="block mx-4 p-2.5 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-green-500 focus:border-green-500 "
                       placeholder="Your Comment..."
+                      value={comment}
                       onChange={(e) => setComment(e.target.value)}
                     ></textarea>
                     <button onClick={(e) => handleSaveComment(e)} className="inline-flex justify-center p-2 text-green-600 rounded-full cursor-pointer hover:bg-green-100">
