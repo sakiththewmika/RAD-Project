@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import { useSnackbar } from "notistack";
 
 const AddListModal = ({ onClose }) => {
     const [listName, setListName] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const { user } = useAuth();
+    const { enqueueSnackbar } = useSnackbar();
 
     const addList = (e) => {
         e.preventDefault();
@@ -21,6 +23,7 @@ const AddListModal = ({ onClose }) => {
             .post(`http://localhost:5200/list`, { name: listName }, { withCredentials: true })
             .then((res) => {
                 setLoading(false);
+                enqueueSnackbar('List added successfully', { variant: 'success' });
                 onClose(); // Close the modal only if the request is successful
             })
             .catch((err) => {

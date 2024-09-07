@@ -3,6 +3,7 @@ import { useNavigate, Outlet, useParams } from "react-router-dom";
 import AddListModal from '../components/AddListModal';
 import EditListModal from '../components/EditListModal';
 import DeleteListModal from '../components/DeleteListModal';
+import DeleteReviewModal from '../components/DeleteReviewModal';
 import StarRating from '../components/StarRating';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
@@ -17,8 +18,10 @@ const PlannerDashboard = () => {
     const [isAddListModalOpen, setIsAddListModalOpen] = useState(false);
     const [isEditListModalOpen, setIsEditListModalOpen] = useState(false);
     const [isDeleteListModalOpen, setIsDeleteListModalOpen] = useState(false);
+    const [isDeleteReviewModalOpen, setIsDeleteReviewModalOpen] = useState(false);
     const [selectedListID, setSelectedListID] = useState(null);
     const [selectedListName, setSelectedListName] = useState('');
+    const [selectedReviewID, setSelectedReviewID] = useState(null);
     const [openMenuId, setOpenMenuId] = useState(null);
     const { user } = useAuth();
     const menuRef = useRef(null);
@@ -29,18 +32,18 @@ const PlannerDashboard = () => {
     const [delReviewID, setDelReviewID] = useState(null);
 
     //delete review
-    const handleReviewDelete = (reviewID) => {
-        axios
-            .delete(`http://localhost:5200/review/${reviewID}`, { withCredentials: true })
-            .then(() => {
-                enqueueSnackbar('Review Deleted Successfully', { variant: 'success' });
-                reloadReviews();
-            })
-            .catch((error) => {
-                alert("Error Occured");
-                console.log(error);
-            })
-    }
+    // const handleReviewDelete = (reviewID) => {
+    //     axios
+    //         .delete(`http://localhost:5200/review/${reviewID}`, { withCredentials: true })
+    //         .then(() => {
+    //             enqueueSnackbar('Review Deleted Successfully', { variant: 'success' });
+    //             reloadReviews();
+    //         })
+    //         .catch((error) => {
+    //             alert("Error Occured");
+    //             console.log(error);
+    //         })
+    // }
 
     const fetchLists = () => {
         setLoading(true);
@@ -91,7 +94,6 @@ const PlannerDashboard = () => {
 
     const closeAddModal = () => {
         setIsAddListModalOpen(false);
-        enqueueSnackbar('List added successfully', { variant: 'success' });
         fetchLists(); // Refresh the lists after adding
     };
 
@@ -117,6 +119,17 @@ const PlannerDashboard = () => {
         setSelectedListID(null);
         setIsDeleteListModalOpen(false);
         fetchLists(); // Refresh the lists after deleting
+    };
+
+    const handleReviewDeleteClick = (reviewID) => {
+        setSelectedReviewID(reviewID);
+        setIsDeleteReviewModalOpen(true);
+    };
+
+    const closeReviewDeleteModal = () => {
+        setSelectedReviewID(null);
+        setIsDeleteReviewModalOpen(false);
+        reloadReviews(); // Refresh the reviews after deleting
     };
 
     const toggleMenu = (id, event) => {
@@ -207,12 +220,11 @@ const PlannerDashboard = () => {
                             className="mb-4 border border-gray-100 rounded-lg bg-gray-50 flex flex-row w-12/12 p-2"
                             key={review._id}
                         >
-                            <div className='flex flex-1'>
+                            <div className='flex flex-1 px-2'>
                                 <ol className="divider-gray-200 ">
                                     <li>
-                                        <a
-                                            href="#"
-                                            className="items-center block p-3 sm:flex hover:bg-gray-100 hover:rounded-lg"
+                                        <div
+                                            className="items-center block p-3 sm:flex "
                                         >
                                             <div className="text-gray-600 ">
                                                 <div className="text-base font-normal">
@@ -225,12 +237,12 @@ const PlannerDashboard = () => {
                                                 </div>
                                                 <StarRating rating={review.rating} />
                                             </div>
-                                        </a>
+                                        </div>
                                     </li>
                                 </ol>
                             </div>
-                            <div className='flex flex-1 justify-end items-center'>
-                                <MdOutlineDelete className='text-2xl text-red-600 hover:cursor-pointer' onClick={() => handleReviewDelete(review._id)} />
+                            <div className='flex flex-1 px-4 justify-end items-center'>
+                                <MdOutlineDelete className='text-2xl text-red-600 hover:cursor-pointer' onClick={() => handleReviewDeleteClick(review._id)} />
                             </div>
 
                         </div>
@@ -241,7 +253,11 @@ const PlannerDashboard = () => {
 
             </div>
 
-            {/* delete toggle modal */}
+            {isDeleteReviewModalOpen && selectedReviewID && (
+                <div className="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 backdrop-blur-sm">
+                    <DeleteReviewModal reviewID={selectedReviewID} onClose={closeReviewDeleteModal} />
+                </div>
+            )}
 
 
         </div>

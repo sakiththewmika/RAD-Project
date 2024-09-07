@@ -34,6 +34,11 @@ const EditUserNameModal = ({ onClose }) => {
         return nameRegex.test(name);
     };
 
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test
+    }
+
     const handleEditUser = (e) => {
         e.preventDefault();
         if (!firstName || !lastName) {
@@ -42,6 +47,11 @@ const EditUserNameModal = ({ onClose }) => {
         }
         if (!validateName(firstName) || !validateName(lastName)) {
             setError('Names must only contain letters.');
+            return;
+        }
+
+        if (!validateEmail(email)) {
+            setError('Please enter a valid email address');
             return;
         }
 
@@ -98,6 +108,7 @@ const EditUserNameModal = ({ onClose }) => {
                             <input
                                 id="images"
                                 type="file"
+                                accept=".jpg, .jpeg, .png"
                                 onChange={handleImagesChange}
                                 className="hidden"
                             />
