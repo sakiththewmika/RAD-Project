@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useSnackbar } from "notistack";
 import DeleteUserModal from "./DeleteUserModal";
-import EditUserNameModal from "./EditUserNameModal";
+import EditUserModal from "./EditUserModal";
 import ChangePasswordModal from "./ChangePasswordModal";
 import { BsPencilSquare } from "react-icons/bs";
 const Header = () => {
@@ -94,39 +94,33 @@ const Header = () => {
                                 <img className="w-12 h-12 rounded-full" src={`http://localhost:5200/${user.profilePhoto}`} alt="user photo" />
                             </button>
                             <div ref={dropdownRef} className={`z-50 ${isDropdownOpen ? 'block' : 'hidden'} absolute right-0 top-full mt-2 w-fit min-w-52 origin-top-right rounded-lg shadow-lg bg-gray-100 divide-y divide-gray-300`} id="user-dropdown">
-                                <div className="px-4 py-3">
+                                <div className="relative px-4 py-3">
                                     <span className="block text-sm text-gray-700">{user.firstName} {user.lastName}</span>
                                     <span className="block text-sm text-gray-500 truncate">{user.email}</span>
                                     <span className="block text-sm text-gray-400 truncate">{user.role.charAt(0).toUpperCase() + user.role.slice(1)}</span>
-                                    <div className="flex justify-end">
-                                    <BsPencilSquare />
-                                    </div>
+                                    <button
+                                    onClick={(e) => {handleEditCardClick(e);}}
+                                     className="absolute z-10 top-16 right-2">
+                                        <BsPencilSquare />
+                                    </button>
                                 </div>
                                 <ul aria-labelledby="user-menu-button">
                                     <li>
                                         {user.role === "admin" && (
-                                        <Link to="/admin" className="block px-4 py-3 text-sm text-center text-gray-800 hover:bg-gray-200" onClick={handleDropdownItemClick}>Dashboard</Link>
+                                            <Link to="/admin" className="block px-4 py-3 text-md text-center text-gray-800 hover:bg-gray-200" onClick={handleDropdownItemClick}>Dashboard</Link>
                                         )}
                                     </li>
                                     <li>
                                         {user.role === "planner" && (
-                                        <Link to="/planner" className="block px-4 py-3 text-sm text-center text-gray-800 hover:bg-gray-200" onClick={handleDropdownItemClick}>Dashboard</Link>
+                                            <Link to="/planner" className="block px-4 py-3 text-md text-center text-gray-800 hover:bg-gray-200" onClick={handleDropdownItemClick}>Dashboard</Link>
                                         )}
                                     </li>
                                     <li>
                                         {user.role === "provider" && (
-                                        <Link to="/provider" className="block px-4 py-3 text-sm text-center text-gray-800 hover:bg-gray-200" onClick={handleDropdownItemClick}>My Services</Link>
+                                            <Link to="/provider" className="block px-4 py-3 text-md text-center text-gray-800 hover:bg-gray-200" onClick={handleDropdownItemClick}>My Services</Link>
                                         )}
                                     </li>
                                 </ul>
-                                <button
-                                    onClick={() => {
-                                        handleEditCardClick();
-                                    }}
-                                    className="block px-4 py-1 text-sm text-gray-500 rounded-b-lg hover:bg-gray-200 w-full"
-                                >
-                                    Change User Name
-                                </button>
                                 <button
                                     onClick={() => {
                                         handlePasswordCardClick();
@@ -177,7 +171,7 @@ const Header = () => {
                     <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg w-full md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:ml-auto">
                         <li>
                             <Link to="/" onClick={handleNavCollapse} className={`block text-lg py-2 px-3 rounded md:p-0 ${location.pathname === '/' ? 'bg-teal-500 md:bg-transparent md:text-teal-700' : ' text-black hover:bg-teal-500/40 md:hover:bg-transparent md:bg-transparent md:hover:text-teal-700'}`} aria-current={location.pathname === '/' ? 'home page' : undefined}>
-                                <a href="#home">Home</a>
+                                Home
                             </Link>
                         </li>
                         <li>
@@ -198,20 +192,20 @@ const Header = () => {
                     </ul>
                 </div>
                 {isDeleteModalOpen && user && (
-                <div className="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 h-screen backdrop-blur-sm">
-                    <DeleteUserModal onClose={closeDeleteModal} />
-                </div>
-            )}
+                    <div className="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 h-screen backdrop-blur-sm">
+                        <DeleteUserModal onClose={closeDeleteModal} />
+                    </div>
+                )}
                 {isEditModalOpen && user && (
-                <div className="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 h-screen backdrop-blur-sm">
-                    <EditUserNameModal onClose={closeEditModal} />
-                </div>
-            )}
+                    <div className="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 h-screen backdrop-blur-sm">
+                        <EditUserModal onClose={closeEditModal} />
+                    </div>
+                )}
                 {isChangePasswordModalOpen && user && (
-                <div className="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 h-screen backdrop-blur-sm">
-                    <ChangePasswordModal onClose={closePasswordModal} />
-                </div>
-            )}
+                    <div className="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 h-screen backdrop-blur-sm">
+                        <ChangePasswordModal onClose={closePasswordModal} />
+                    </div>
+                )}
             </div>
         </nav>
     );

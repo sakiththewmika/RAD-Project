@@ -32,29 +32,29 @@ const ServiceDetails = () => {
   //Save the newly added comment
   const handleSaveComment = (e) => {
     e.preventDefault();
-    if(comment===""){
+    if (comment === "") {
       enqueueSnackbar('Please add a Comment', { variant: 'error' })
-    }else{
-    const data = {
-      userID,
-      serviceID,
-      rating,
-      comment,
-    }
-    axios
-    .post("http://localhost:5200/review", data, { withCredentials: true })
-    .then(() => {
-      enqueueSnackbar('Reviews added successfully', { variant: 'success' });
-      fetchReviews();
-      setComment('');
-      
-    })
-    .catch((error) => {
-      enqueueSnackbar("Error Occured", { variant: 'error' })
-      console.log(error);
-    });
-  };
-   
+    } else {
+      const data = {
+        userID,
+        serviceID,
+        rating,
+        comment,
+      }
+      axios
+        .post("http://localhost:5200/review", data, { withCredentials: true })
+        .then(() => {
+          enqueueSnackbar('Reviews added successfully', { variant: 'success' });
+          fetchReviews();
+          setComment('');
+
+        })
+        .catch((error) => {
+          enqueueSnackbar("Error Occured", { variant: 'error' })
+          console.log(error);
+        });
+    };
+
   };
 
   // Fetch the service details from the server
@@ -195,9 +195,9 @@ const ServiceDetails = () => {
               <strong>Email Us :</strong> {service.email}
             </p>
             <p className="text-s mt-5">
-              <label>Posted by:</label> {user.firstName} {user.lastName}
+              <label>Posted by:</label> {service.userID.firstName} {service.userID.lastName}
             </p>
-            
+
             <div className="grid grid-cols-5 gap-4">
               {service.images.map((image, index) => (
                 <div key={index}>

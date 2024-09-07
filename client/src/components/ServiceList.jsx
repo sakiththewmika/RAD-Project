@@ -36,8 +36,7 @@ const ServiceList = () => {
                             <td className="py-2 px-4 border-b">{service.type.name}</td>
                             <td className="py-2 px-4 border-b">{`${service.userID.firstName} ${service.userID.lastName}`}</td>
                             <td className="py-2 px-4 border-b">{service.city}</td>
-                            {/* <td className="py-2 px-4 border-b">{new Date(service.createdAt.$date).toLocaleDateString()}</td> */}
-                            <td className="py-2 px-4 border-b">NULL</td>
+                            <td className="py-2 px-4 border-b">{new Date(service.createdAt).toLocaleDateString()}</td>
                         </tr>
                     ))}
                 </tbody>

@@ -177,7 +177,7 @@ router.get('/user', authentication, authorization(['provider']), async (req, res
 router.get('/:id', authentication, authorization(['admin','planner', 'provider']), async (req, res) => {
     try {
         const { id } = req.params;
-        const service = await Service.findById(id);
+        const service = await Service.findById(id).populate('userID', 'firstName lastName');
         if (service) {
             return res.status(200).send(service);
         }

@@ -137,15 +137,26 @@ router.get('/profile', authentication, authorization(['admin', 'planner', 'provi
 // });
 
 //route to update a user by id
-router.put('/name', authentication, authorization(['planner', 'provider', 'admin']), async (req, res) => {
+router.put('/', authentication, authorization(['planner', 'provider', 'admin']), upload.single('profilePhoto'), async (req, res) => {
     try {
         if (
             !req.body.firstName ||
-            !req.body.lastName
+            !req.body.lastName ||
+            !req.body.email
         ) {
             return res.status(400).send({ message: 'All fields are required' });
         }
-        const result = await User.findByIdAndUpdate(req.user.id, req.body);
+        let email = req.body.email;
+        if (await User.findOne({ email: req.body.email, role: req.user.role })) {
+            email = req.user.email;
+        }
+        const edituser = {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: email,
+            profilePhoto: req.file ? req.file.path : req.user.profilePhoto
+        };
+        const result = await User.findByIdAndUpdate(req.user.id, edituser);
 
         if (!result) {
             return res.status(404).send({ message: 'User not found' });
