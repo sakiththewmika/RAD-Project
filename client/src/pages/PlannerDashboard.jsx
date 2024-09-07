@@ -7,12 +7,12 @@ import StarRating from '../components/StarRating';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
-import {MdOutlineAddBox, MdOutlineDelete } from 'react-icons/md';
+import { MdOutlineAddBox, MdOutlineDelete } from 'react-icons/md';
 
 
 const PlannerDashboard = () => {
     const [lists, setLists] = useState([]);
-    const [reviews,setReviews]=useState([]);
+    const [reviews, setReviews] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isAddListModalOpen, setIsAddListModalOpen] = useState(false);
     const [isEditListModalOpen, setIsEditListModalOpen] = useState(false);
@@ -22,21 +22,21 @@ const PlannerDashboard = () => {
     const [openMenuId, setOpenMenuId] = useState(null);
     const { user } = useAuth();
     const menuRef = useRef(null);
-    const {listID} = useParams();
+    const { listID } = useParams();
     const { enqueueSnackbar } = useSnackbar();
-    const [reviewID,setReviewID]=useState(null);
+    const [reviewID, setReviewID] = useState(null);
     const navigate = useNavigate();
-    const [delReviewID,setDelReviewID]=useState(null);
+    const [delReviewID, setDelReviewID] = useState(null);
 
     //delete review
-    const handleReviewDelete=(reviewID)=>{
+    const handleReviewDelete = (reviewID) => {
         axios
             .delete(`http://localhost:5200/review/${reviewID}`, { withCredentials: true })
-            .then(()=>{
-                enqueueSnackbar('Review Deleted Successfully',{variant:'success'});
+            .then(() => {
+                enqueueSnackbar('Review Deleted Successfully', { variant: 'success' });
                 reloadReviews();
             })
-            .catch((error)=>{
+            .catch((error) => {
                 alert("Error Occured");
                 console.log(error);
             })
@@ -68,9 +68,9 @@ const PlannerDashboard = () => {
         }
     };
 
-    useEffect(()=>{
+    useEffect(() => {
         reloadReviews();
-      },[])
+    }, [])
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -194,58 +194,58 @@ const PlannerDashboard = () => {
                     <DeleteListModal listID={selectedListID} onClose={closeDeleteModal} />
                 </div>
             )}
-            
-  {/* Displaying my reviews */}
-    <div className='p-4'>
-       <h1 className='text-3xl my-8'>My Reviews</h1>
-      
-       
-        {/* <ReviewsTable reviews={reviews} /> */}
-        <div className="mt-5">
-        {reviews.map((review) => (
-              <div
-                className="mb-4 border border-gray-100 rounded-lg bg-gray-50 flex flex-row w-12/12 p-2"
-                key={review._id}
-              >
-                <div className='flex flex-1'>
-                <ol className="divider-gray-200 ">
-                  <li>
-                    <a
-                      href="#"
-                      className="items-center block p-3 sm:flex hover:bg-gray-100 hover:rounded-lg"
-                    >
-                      <div className="text-gray-600 ">
-                        <div className="text-base font-normal">
-                          <span className="font-medium text-gray-900">
-                            {/* {review.title}  */}
-                          </span>
-                        </div>
-                        <div className="text-md font-normal">
-                          {review.comment}
-                        </div>
-                        <StarRating rating={review.rating} />
-                      </div>
-                    </a>
-                  </li>
-                </ol>
-                </div>
-                <div className='flex flex-1 justify-end items-center'>
-                <MdOutlineDelete className='text-2xl text-red-600 hover:cursor-pointer'  onClick={()=>handleReviewDelete(review._id)} />
-                </div>
-                
-              </div>
-              
-            ))}
-        </div>    
-            
-      
-    </div>
 
-    {/* delete toggle modal */}
+            {/* Displaying my reviews */}
+            <div className='p-4'>
+                <h1 className='text-3xl my-8'>My Reviews</h1>
+
+
+                {/* <ReviewsTable reviews={reviews} /> */}
+                <div className="mt-5">
+                    {reviews.map((review) => (
+                        <div
+                            className="mb-4 border border-gray-100 rounded-lg bg-gray-50 flex flex-row w-12/12 p-2"
+                            key={review._id}
+                        >
+                            <div className='flex flex-1'>
+                                <ol className="divider-gray-200 ">
+                                    <li>
+                                        <a
+                                            href="#"
+                                            className="items-center block p-3 sm:flex hover:bg-gray-100 hover:rounded-lg"
+                                        >
+                                            <div className="text-gray-600 ">
+                                                <div className="text-base font-normal">
+                                                    <span className="font-medium text-gray-900">
+                                                        {review.serviceID ? review.serviceID.title : 'Service not available'}
+                                                    </span>
+                                                </div>
+                                                <div className="text-md font-normal">
+                                                    {review.comment}
+                                                </div>
+                                                <StarRating rating={review.rating} />
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ol>
+                            </div>
+                            <div className='flex flex-1 justify-end items-center'>
+                                <MdOutlineDelete className='text-2xl text-red-600 hover:cursor-pointer' onClick={() => handleReviewDelete(review._id)} />
+                            </div>
+
+                        </div>
+
+                    ))}
+                </div>
+
+
+            </div>
+
+            {/* delete toggle modal */}
 
 
         </div>
-    
+
     );
 };
 
