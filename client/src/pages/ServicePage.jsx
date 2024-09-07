@@ -221,7 +221,9 @@ const ServicePage = () => {
                                 <div className="h-auto">
                                     <h5 className="text-xl font-bold tracking-tight text-gray-900">{service.title}</h5>
                                     <p className="font-normal text-gray-700">Location : {service.city}</p>
-                                    <p className="font-normal text-gray-500">Price : {service.price}</p>
+                                    <p className="font-normal text-gray-500">Starting From : Rs. {service.price}</p>
+                                    <p className="font-normal text-gray-500">Best For : {service.type.name} Type Events</p>
+                                
                                 </div>
                                 {user && user.role === 'planner' && (
                                     <button
