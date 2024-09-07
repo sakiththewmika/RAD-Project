@@ -98,9 +98,9 @@ const Header = () => {
                                     <span className="block text-sm text-gray-700">{user.firstName} {user.lastName}</span>
                                     <span className="block text-sm text-gray-500 truncate">{user.email}</span>
                                     <span className="block text-sm text-gray-400 truncate">{user.role.charAt(0).toUpperCase() + user.role.slice(1)}</span>
-                                    {/* <div className="flex justify-end">
+                                    <div className="flex justify-end">
                                     <BsPencilSquare />
-                                    </div> */}
+                                    </div>
                                 </div>
                                 <ul aria-labelledby="user-menu-button">
                                     <li>
