@@ -10,21 +10,23 @@ const DeleteUserModal = ({ onClose }) => {
     const { enqueueSnackbar } = useSnackbar();
     const navigate = useNavigate();
     const { logout } = useAuth();
+    const token = sessionStorage.getItem('token');
 
     const handleDeleteUser = () => {
         setLoading(true);
         axios
-            .delete(`http://localhost:5200/user`, { withCredentials: true })
-            .then(() => {
+            .delete(`http://localhost:5200/user`, { headers: { Authorization: `Bearer ${token}` } })
+            .then((res) => {
                 setLoading(false);
-                enqueueSnackbar('Account deleted successfully', { variant: 'success' });
+                enqueueSnackbar(res.data.message, { variant: 'success' });
                 logout();
                 navigate('/');
                 onClose();
             })
             .catch((err) => {
                 setLoading(false);
-                setError('An error occurred while deleting the account');
+                setError(err.response.data.message);
+                enqueueSnackbar(err.response.data.message, { variant: 'error'});
             });
     };
 

@@ -13,6 +13,7 @@ const EditUserNameModal = ({ onClose }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const { enqueueSnackbar } = useSnackbar();
+    const token = sessionStorage.getItem('token');
 
     const handleImagesChange = (e) => {
         const file = e.target.files[0]; 
@@ -65,16 +66,17 @@ const EditUserNameModal = ({ onClose }) => {
 
         setLoading(true);
         axios
-            .put(`http://localhost:5200/user`, formdata, { withCredentials: true })
-            .then(() => {
+            .put(`http://localhost:5200/user`, formdata, { headers: { Authorization: `Bearer ${token}` } })
+            .then((res) => {
                 setLoading(false);
                 onClose();
-                enqueueSnackbar('User profile updated successfully', { variant: 'success' });
+                enqueueSnackbar(res.data.message, { variant: 'success' });
                 window.location.reload();
             })
             .catch((err) => {
                 setLoading(false);
-                setError('An error occurred while editing the user');
+                setError(err.response.data.message);
+                enqueueSnackbar(err.response.data.message, { variant: 'error' });
             });
     };
 

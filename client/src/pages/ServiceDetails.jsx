@@ -22,6 +22,7 @@ const ServiceDetails = () => {
   const userID = user._id;
   const serviceID = id;
   const { enqueueSnackbar } = useSnackbar();
+  const token = sessionStorage.getItem('token');
 
   const navigate = useNavigate();
   const handleRatingSelect = (rating) => {
@@ -42,9 +43,9 @@ const ServiceDetails = () => {
         comment,
       }
       axios
-        .post("http://localhost:5200/review", data, { withCredentials: true })
+        .post("http://localhost:5200/review", data, { headers: { Authorization: `Bearer ${token}` } })
         .then(() => {
-          enqueueSnackbar('Reviews added successfully', { variant: 'success' });
+          enqueueSnackbar('Review added successfully', { variant: 'success' });
           fetchReviews();
           setComment('');
 
@@ -61,7 +62,7 @@ const ServiceDetails = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get(`http://localhost:5200/service/${id}`, { withCredentials: true })
+      .get(`http://localhost:5200/service/${id}`, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => {
         setService(res.data);
         setMainImage(res.data.images[0]);
@@ -77,7 +78,7 @@ const ServiceDetails = () => {
     const fetchLists = () => {
       setLoading(true);
       axios
-        .get(`http://localhost:5200/list`, { withCredentials: true })
+        .get(`http://localhost:5200/list`, { headers: { Authorization: `Bearer ${token}` } })
         .then((res) => {
           setLists(res.data.data);
           setLoading(false);
@@ -96,7 +97,7 @@ const ServiceDetails = () => {
   const fetchReviews = () => {
     setReviewsLoading(true);
     axios
-      .get(`http://localhost:5200/review/service/${id}`, { withCredentials: true })
+      .get(`http://localhost:5200/review/service/${id}`, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => {
         setReviews(res.data.data);
         setReviewsLoading(false);
@@ -114,17 +115,17 @@ const ServiceDetails = () => {
   // Handle adding service to a list
   const handleAddList = (listID, serviceID, event) => {
     event.stopPropagation();
-    // setLoading(true);
     axios
-      .post(`http://localhost:5200/list/${listID}`, { serviceID }, { withCredentials: true })
+      .post(`http://localhost:5200/list/${listID}`, { serviceID }, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => {
-        console.log(res.data.message);
         setOpenMenuId(null);
         setLoading(false);
+        enqueueSnackbar(res.data.message, { variant: 'success' })
       })
       .catch((err) => {
         console.log(err);
         setLoading(false);
+        enqueueSnackbar(err.response.data.message, { variant: 'error' });
       });
   };
 

@@ -10,6 +10,7 @@ const TypeList = () => {
     const [showTypeForm, setShowTypeForm] = useState(false);
     const [showConfirmPopup, setShowConfirmPopup] = useState(false);
     const [itemToDelete, setItemToDelete] = useState(null);
+    const token = sessionStorage.getItem('token');
 
     useEffect(() => {
         fetchTypes();
@@ -17,7 +18,7 @@ const TypeList = () => {
 
     const fetchTypes = async () => {
         try {
-            const response = await axios.get('http://localhost:5200/type', {withCredentials:true});
+            const response = await axios.get('http://localhost:5200/type', { headers: { Authorization: `Bearer ${token}` } });
             setTypes(response.data.data);
         } catch (error) {
             console.error('Error fetching types', error);
@@ -46,7 +47,7 @@ const TypeList = () => {
 
     const confirmDelete = async () => {
         try {
-            await axios.delete(`http://localhost:5200/type/${itemToDelete}`, {withCredentials:true});
+            await axios.delete(`http://localhost:5200/type/${itemToDelete}`, { headers: { Authorization: `Bearer ${token}` } });
             fetchTypes();
             setShowConfirmPopup(false);
         } catch (error) {

@@ -7,7 +7,6 @@ import DeleteReviewModal from '../components/DeleteReviewModal';
 import StarRating from '../components/StarRating';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
-import { useSnackbar } from 'notistack';
 import { MdOutlineAddBox, MdOutlineDelete } from 'react-icons/md';
 
 
@@ -26,28 +25,14 @@ const PlannerDashboard = () => {
     const { user } = useAuth();
     const menuRef = useRef(null);
     const { listID } = useParams();
-    const { enqueueSnackbar } = useSnackbar();
     const [reviewID, setReviewID] = useState(null);
     const navigate = useNavigate();
     const [delReviewID, setDelReviewID] = useState(null);
-
-    //delete review
-    // const handleReviewDelete = (reviewID) => {
-    //     axios
-    //         .delete(`http://localhost:5200/review/${reviewID}`, { withCredentials: true })
-    //         .then(() => {
-    //             enqueueSnackbar('Review Deleted Successfully', { variant: 'success' });
-    //             reloadReviews();
-    //         })
-    //         .catch((error) => {
-    //             alert("Error Occured");
-    //             console.log(error);
-    //         })
-    // }
+    const token = sessionStorage.getItem('token');
 
     const fetchLists = () => {
         setLoading(true);
-        axios.get(`http://localhost:5200/list`, { withCredentials: true })
+        axios.get(`http://localhost:5200/list`, { headers: { Authorization: `Bearer ${token}` } })
             .then((res) => {
                 setLists(res.data.data);
                 setLoading(false);
@@ -64,7 +49,7 @@ const PlannerDashboard = () => {
 
     const reloadReviews = async () => {
         try {
-            const response = await axios.get(`http://localhost:5200/review/myReviews`, { withCredentials: true });
+            const response = await axios.get(`http://localhost:5200/review/myReviews`, { headers: { Authorization: `Bearer ${token}` } });
             setReviews(response.data.data);
         } catch (error) {
             console.error(error);
@@ -197,7 +182,7 @@ const PlannerDashboard = () => {
                     <AddListModal onClose={closeAddModal} />
                 </div>
             )}
-            {isEditListModalOpen && selectedListID && (
+            {isEditListModalOpen  && (
                 <div className="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 backdrop-blur-sm">
                     <EditListModal listID={selectedListID} currentListName={selectedListName} onClose={closeEditModal} />
                 </div>

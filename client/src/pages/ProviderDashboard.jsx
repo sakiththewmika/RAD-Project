@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useSnackbar } from 'notistack';
 import DeleteServiceModal from '../components/DeleteServiceModal';
 import axios from 'axios';
 
@@ -13,12 +12,12 @@ const ProviderDashboard = () => {
     const [openMenuId, setOpenMenuId] = useState(null);
     const { user } = useAuth();
     const navigate = useNavigate();
-    const { enqueueSnackbar } = useSnackbar();
     const menuRef = useRef();
+    const token = sessionStorage.getItem('token');
 
     const fetchServices = async () => {
         try {
-            const res = await axios.get(`http://localhost:5200/service/user`, { withCredentials: true });
+            const res = await axios.get(`http://localhost:5200/service/user`, { headers: { Authorization: `Bearer ${token}` } });
             setServices(res.data.data);
             setLoading(false);
         } catch (error) {

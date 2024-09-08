@@ -7,6 +7,7 @@ const EditListModal = ({ listID, currentListName, onClose }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const { enqueueSnackbar } = useSnackbar();
+    const token = sessionStorage.getItem('token');
 
     const handleEditList = (e) => {
         e.preventDefault();
@@ -18,15 +19,16 @@ const EditListModal = ({ listID, currentListName, onClose }) => {
 
         setLoading(true);
         axios
-            .put(`http://localhost:5200/list/${listID}`, { name: listName }, { withCredentials: true })
-            .then(() => {
+            .put(`http://localhost:5200/list/${listID}`, { name: listName }, { headers: { Authorization: `Bearer ${token}` } })
+            .then((res) => {
                 setLoading(false);
-                enqueueSnackbar('List name updated successfully', { variant: 'success' });
+                enqueueSnackbar(res.data.message, { variant: 'success' });
                 onClose(); // Close the modal upon successful edit
             })
             .catch((err) => {
                 setLoading(false);
-                setError('An error occurred while editing the list');
+                setError(err.response.data.message);
+                enqueueSnackbar(err.response.data.message, { variant: 'error' });
             });
     };
 

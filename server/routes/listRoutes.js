@@ -51,7 +51,7 @@ router.put('/:id', authentication, authorization(['planner']), async (req, res) 
         if (!list) {
             return res.status(404).send({ message: 'List not found' });
         }
-        return res.status(200).send({ message: 'List updated successfully' });
+        return res.status(200).send({ message: 'List name updated successfully' });
     } catch (error) {
         console.log(error.message);
         res.status(500).send({ message: error.message });

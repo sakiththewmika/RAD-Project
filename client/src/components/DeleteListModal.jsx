@@ -6,19 +6,21 @@ const DeleteListModal = ({ listID, onClose }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const { enqueueSnackbar } = useSnackbar();
+    const token = sessionStorage.getItem('token');
 
     const handleDeleteList = () => {
         setLoading(true);
         axios
-            .delete(`http://localhost:5200/list/${listID}`, { withCredentials: true })
-            .then(() => {
+            .delete(`http://localhost:5200/list/${listID}`, { headers: { Authorization: `Bearer ${token}` } })
+            .then((res) => {
                 setLoading(false);
-                enqueueSnackbar('List deleted successfully', { variant: 'success' });
+                enqueueSnackbar(res.data.message, { variant: 'success' });
                 onClose();
             })
             .catch((err) => {
                 setLoading(false);
-                setError('An error occurred while deleting the list');
+                setError(err.response.data.message);
+                enqueueSnackbar(err.response.data.message, { variant: 'error'});
             });
     };
 

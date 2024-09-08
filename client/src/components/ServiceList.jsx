@@ -3,6 +3,7 @@ import axios from 'axios'
 
 const ServiceList = () => {
     const [services, setServices] = useState([])
+    const token = sessionStorage.getItem('token')
 
     useEffect(() => {
         fetchServices()
@@ -10,7 +11,7 @@ const ServiceList = () => {
 
     const fetchServices = async () => {
         try {
-            const response = await  axios.get('http://localhost:5200/service/details', {withCredentials:true})
+            const response = await  axios.get('http://localhost:5200/service/details', { headers: { Authorization: `Bearer ${token}` } })
             setServices(response.data.data)
         }
         catch (error) {

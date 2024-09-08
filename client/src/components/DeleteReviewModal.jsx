@@ -6,19 +6,21 @@ const DeleteReviewModal = ({ reviewID, onClose }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const { enqueueSnackbar } = useSnackbar();
+    const token = sessionStorage.getItem('token');
 
     const handleDeleteReview = () => {
         setLoading(true);
         axios
-            .delete(`http://localhost:5200/review/${reviewID}`, { withCredentials: true })
-            .then(() => {
+            .delete(`http://localhost:5200/review/${reviewID}`, { headers: { Authorization: `Bearer ${token}` } })
+            .then((res) => {
                 setLoading(false);
-                enqueueSnackbar('Review deleted successfully', { variant: 'success' });
+                enqueueSnackbar(res.data.message, { variant: 'success' });
                 onClose();
             })
             .catch((err) => {
                 setLoading(false);
-                setError('An error occurred while deleting the Review');
+                setError(err.response.data.message);
+                enqueueSnackbar(err.response.data.message, { variant: 'error' });
             });
     };
 

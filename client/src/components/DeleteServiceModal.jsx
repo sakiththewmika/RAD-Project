@@ -1,21 +1,26 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useSnackbar } from "notistack";
 
 const DeleteServiceModal = ({ serviceID, onClose }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const { enqueueSnackbar } = useSnackbar();
+    const token = sessionStorage.getItem('token');
 
     const handleDeleteService = () => {
         setLoading(true);
         axios
-            .delete(`http://localhost:5200/service/${serviceID}`, { withCredentials: true })
-            .then(() => {
+            .delete(`http://localhost:5200/service/${serviceID}`, { headers: { Authorization: `Bearer ${token}` } })
+            .then((res) => {
                 setLoading(false);
+                enqueueSnackbar(res.data.message, { variant: 'success' });
                 onClose();
             })
             .catch((err) => {
                 setLoading(false);
-                setError('An error occurred while deleting the service');
+                setError(err.response.data.message);
+                enqueueSnackbar(err.response.data.message, { variant: 'error' });
             });
     };
 
