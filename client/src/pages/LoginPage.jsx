@@ -55,6 +55,7 @@ const LoginPage = () => {
 
     const handleLogin = async () => {
         if (!email || !password || emailError || passwordError) {
+            setError("Please fill in all fields correctly");
             return;
         }
 
@@ -142,7 +143,7 @@ const LoginPage = () => {
                     {error && <p className="text-red-500 mb-4">{error}</p>}
                     <div className="mt-4 text-center">
                         <p className="text-gray-500 text-lg">
-                            Don't have an account?
+                            Don't have an account?{" "}
                             <Link to="/register" className="text-[#0F766E] font-semibold">
                                 Sign Up
                             </Link>

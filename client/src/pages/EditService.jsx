@@ -60,7 +60,7 @@ const EditService = () => {
     useEffect(() => {
         setLoading(true);
         axios
-            .get(`http://localhost:5200/service/${id}`, { withCredentials: true })
+            .get(`http://localhost:5200/service/${id}`, { headers: { Authorization: `Bearer ${token}` } })
             .then((res) => {
                 setService(res.data);
                 setTitle(res.data.title);

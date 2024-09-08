@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, Outlet, useParams } from "react-router-dom";
+import { useNavigate, Outlet, useParams, Link } from "react-router-dom";
 import AddListModal from '../components/AddListModal';
 import EditListModal from '../components/EditListModal';
 import DeleteListModal from '../components/DeleteListModal';
@@ -182,7 +182,7 @@ const PlannerDashboard = () => {
                     <AddListModal onClose={closeAddModal} />
                 </div>
             )}
-            {isEditListModalOpen  && (
+            {isEditListModalOpen && (
                 <div className="fixed inset-0 z-50 bg-gray-800 bg-opacity-50 backdrop-blur-sm">
                     <EditListModal listID={selectedListID} currentListName={selectedListName} onClose={closeEditModal} />
                 </div>
@@ -213,9 +213,11 @@ const PlannerDashboard = () => {
                                         >
                                             <div className="text-gray-600 ">
                                                 <div className="text-base font-normal">
-                                                    <span className="font-medium text-gray-900">
-                                                        {review.serviceID ? review.serviceID.title : 'Service not available'}
-                                                    </span>
+                                                    <Link to={`/services/${review.serviceID._id}`} className="text-teal-700 hover:underline">
+                                                        <span className="font-medium text-gray-900 hover:text-teal-700">
+                                                            {review.serviceID ? review.serviceID.title : 'Service not available'}
+                                                        </span>
+                                                    </Link>
                                                 </div>
                                                 <div className="text-md font-normal">
                                                     {review.comment}
