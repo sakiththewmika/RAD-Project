@@ -71,6 +71,7 @@ const EditUserNameModal = ({ onClose }) => {
                 setLoading(false);
                 onClose();
                 enqueueSnackbar(res.data.message, { variant: 'success' });
+                sessionStorage.removeItem('user');
                 window.location.reload();
             })
             .catch((err) => {
