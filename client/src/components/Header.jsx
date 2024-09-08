@@ -6,6 +6,7 @@ import DeleteUserModal from "./DeleteUserModal";
 import EditUserModal from "./EditUserModal";
 import ChangePasswordModal from "./ChangePasswordModal";
 import { BsPencilSquare } from "react-icons/bs";
+
 const Header = () => {
     const [isNavCollapsed, setIsNavCollapsed] = useState(true);
     const { user, logout } = useAuth();
