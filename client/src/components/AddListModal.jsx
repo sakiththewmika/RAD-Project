@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import { useSnackbar } from "notistack";
 
 const AddListModal = ({ onClose }) => {
     const [listName, setListName] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const { user } = useAuth();
+    const { enqueueSnackbar } = useSnackbar();
+    const token = sessionStorage.getItem('token');
 
     const addList = (e) => {
         e.preventDefault();
@@ -18,14 +21,16 @@ const AddListModal = ({ onClose }) => {
 
         setLoading(true);
         axios
-            .post(`http://localhost:5200/list`, { name: listName }, { withCredentials: true })
+            .post(`http://localhost:5200/list`, { name: listName }, { headers: { Authorization: `Bearer ${token}` } })
             .then((res) => {
                 setLoading(false);
+                enqueueSnackbar(res.data.message, { variant: 'success' });
                 onClose(); // Close the modal only if the request is successful
             })
             .catch((err) => {
                 setLoading(false);
-                setError('An error occurred');
+                setError(err.response.data.message);
+                enqueueSnackbar(err.response.data.message, { variant: 'error' });
             });
     };
 

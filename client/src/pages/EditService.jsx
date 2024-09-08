@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import ReactQuill from "react-quill";
+import { useSnackbar } from "notistack";
 import "react-quill/dist/quill.snow.css";
 import "./Editor.css";
 
@@ -53,11 +54,13 @@ const EditService = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
     const { id } = useParams();
+    const { enqueueSnackbar } = useSnackbar();
+    const token = sessionStorage.getItem("token");
 
     useEffect(() => {
         setLoading(true);
         axios
-            .get(`http://localhost:5200/service/${id}`, { withCredentials: true })
+            .get(`http://localhost:5200/service/${id}`, { headers: { Authorization: `Bearer ${token}` } })
             .then((res) => {
                 setService(res.data);
                 setTitle(res.data.title);
@@ -279,12 +282,14 @@ const EditService = () => {
 
             try {
                 console.log(formData);
-                await axios.put(`http://localhost:5200/service/${id}`, formData, { withCredentials: true });
+                await axios.put(`http://localhost:5200/service/${id}`, formData, { headers: { Authorization: `Bearer ${token}` } });
                 navigate("/provider");
+                enqueueSnackbar("Service updated successfully", { variant: "success" });
             }
             catch (error) {
                 console.error(error);
-                setError("Something went wrong");
+                setError(error.response.data.message);
+                enqueueSnackbar(error.response.data.message, { variant: "error" });
             }
         }
     }

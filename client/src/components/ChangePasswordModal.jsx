@@ -10,6 +10,7 @@ const ChangePasswordModal = ({ onClose }) => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const { enqueueSnackbar } = useSnackbar();
+    const token = sessionStorage.getItem('token');
 
     const handleEditUser = (e) => {
         if (!password || !confirmPassword) {
@@ -19,16 +20,17 @@ const ChangePasswordModal = ({ onClose }) => {
 
         setLoading(true);
         axios
-            .put(`http://localhost:5200/user/password`, { password }, { withCredentials: true })
-            .then(() => {
+            .put(`http://localhost:5200/user/password`, { password }, { headers: { Authorization: `Bearer ${token}` } })
+            .then((res) => {
                 setLoading(false);
                 navigate('/login');
-                enqueueSnackbar('Password updated successfully', { variant: 'success' });
+                enqueueSnackbar(res.data.message, { variant: 'success' });
                 onClose();
             })
             .catch((err) => {
                 setLoading(false);
-                setError('An error occurred while editing the user');
+                setError(err.response.data.message);
+                enqueueSnackbar(err.response.data.message, { variant: 'error' });
             });
     };
 

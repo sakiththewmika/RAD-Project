@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 
-const DeleteServiceModal = ({ serviceID, onClose }) => {
+const DeleteReviewModal = ({ reviewID, onClose }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const { enqueueSnackbar } = useSnackbar();
     const token = sessionStorage.getItem('token');
 
-    const handleDeleteService = () => {
+    const handleDeleteReview = () => {
         setLoading(true);
         axios
-            .delete(`http://localhost:5200/service/${serviceID}`, { headers: { Authorization: `Bearer ${token}` } })
+            .delete(`http://localhost:5200/review/${reviewID}`, { headers: { Authorization: `Bearer ${token}` } })
             .then((res) => {
                 setLoading(false);
                 enqueueSnackbar(res.data.message, { variant: 'success' });
@@ -38,9 +38,9 @@ const DeleteServiceModal = ({ serviceID, onClose }) => {
                 >
                     &times;
                 </button>
-                <h2 className="text-2xl font-semibold mb-4">Delete Service</h2>
+                <h2 className="text-2xl font-semibold mb-4">Delete Review</h2>
                 {error && <p className="text-red-600 mb-4">{error}</p>}
-                <p>Are you sure you want to delete this Service? This action cannot be undone.</p>
+                <p>Are you sure you want to delete this Review? This action cannot be undone.</p>
                 <div className="flex justify-end mt-6">
                     <button
                         onClick={onClose}
@@ -49,7 +49,7 @@ const DeleteServiceModal = ({ serviceID, onClose }) => {
                         Cancel
                     </button>
                     <button
-                        onClick={handleDeleteService}
+                        onClick={handleDeleteReview}
                         className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600"
                     >
                         Delete
@@ -60,4 +60,4 @@ const DeleteServiceModal = ({ serviceID, onClose }) => {
     );
 };
 
-export default DeleteServiceModal;
+export default DeleteReviewModal;

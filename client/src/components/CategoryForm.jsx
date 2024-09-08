@@ -4,6 +4,7 @@ import axios from 'axios';
 
 const CategoryForm = ({ category, onClose }) => {
     const [name, setName] = useState('');
+    const token = sessionStorage.getItem('token');
 
     useEffect(() => {
         if (category) {
@@ -15,9 +16,9 @@ const CategoryForm = ({ category, onClose }) => {
         e.preventDefault();
         try {
             if (category) {
-                await axios.put(`http://localhost:5200/category/${category._id}`, { name }, {withCredentials:true});
+                await axios.put(`http://localhost:5200/category/${category._id}`, { name }, { headers: { Authorization: `Bearer ${token}` } });
             } else {
-                await axios.post('http://localhost:5200/category', { name }, {withCredentials:true});
+                await axios.post('http://localhost:5200/category', { name }, { headers: { Authorization: `Bearer ${token}` } });
             }
             onClose();
         } catch (error) {
@@ -40,15 +41,15 @@ const CategoryForm = ({ category, onClose }) => {
                     />
                 </div>
                 <div className="flex justify-end space-x-2">
-                    <button 
-                        type="submit" 
+                    <button
+                        type="submit"
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                     >
                         {category ? 'Update' : 'Add'}
                     </button>
-                    <button 
-                        type="button" 
-                        onClick={onClose} 
+                    <button
+                        type="button"
+                        onClick={onClose}
                         className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                     >
                         Cancel

@@ -22,6 +22,7 @@ const ServicePage = () => {
     const { user } = useAuth();
     const menuRef = useRef(null);
     const { enqueueSnackbar } = useSnackbar();
+    const token = sessionStorage.getItem('token');
 
     // Hooks for URL location and navigation
     const locationObject = useLocation();
@@ -87,7 +88,7 @@ const ServicePage = () => {
     useEffect(() => {
         const fetchLists = () => {
             setLoading(true);
-            axios.get(`http://localhost:5200/list`, { withCredentials: true })
+            axios.get(`http://localhost:5200/list`, { headers: { Authorization: `Bearer ${token}` } })
                 .then((res) => {
                     setLists(res.data.data);
                     setLoading(false);
@@ -142,15 +143,16 @@ const ServicePage = () => {
     const handleAddList = (listID, serviceID, event) => {
         event.stopPropagation();
         // setLoading(true);
-        axios.post(`http://localhost:5200/list/${listID}`, { serviceID }, { withCredentials: true })
+        axios.post(`http://localhost:5200/list/${listID}`, { serviceID }, { headers: { Authorization: `Bearer ${token}` } })
             .then((res) => {
-                console.log(res.data.message);
                 setOpenMenuId(null);
                 setLoading(false);
+                enqueueSnackbar(res.data.message, { variant: 'success' });
             })
             .catch((err) => {
                 console.log(err);
                 setLoading(false);
+                enqueueSnackbar(err.response.data.message, { variant: 'error' });
             });
     };
 

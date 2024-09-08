@@ -6,7 +6,7 @@ const Home = ({destination='/services'}) => {
 
     return (
         <div className="flex flex-col-reverse md:flex-row w-full md:p-9">
-        <div className="flex flex-1 flex-col justify-center" style={{marginTop:'-35vh'}}>
+        <div className="flex flex-1 flex-col justify-center -mt-16">
           <div className=''>
             <label
               className="text-4xl md:text-7xl text-teal-800 font-bold fade-in"
@@ -36,7 +36,7 @@ const Home = ({destination='/services'}) => {
         </div>
         
         <div className="flex flex-1 justify-center items-center mb-5 md:mb-0">
-          <img src="./assets/heroImg.png" className='w-full h-auto fade-in'/>
+          <img src="./assets/heroImg.png" className='w-4/5 h-auto fade-in'/>
         </div>
       </div>
     );

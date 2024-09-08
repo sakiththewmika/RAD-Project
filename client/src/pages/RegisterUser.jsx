@@ -150,16 +150,22 @@ const RegisterUser = () => {
                         <h1 className="text-3xl text-gray-700 font-semibold text-center">Sign Up</h1>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
-                        <div className="col-span-2 flex justify-self-center items-center">
-                            <div>
-                                <label className="block text-lg text-gray-500">Profile Photo</label>
+                        <div className="col-span-2 flex justify-center gap-8 items-center">
+                            <div className="">
+                                <label className="block text-lg text-gray-500 ">Profile Photo</label>
                                 <input
+                                    id="images"
                                     type="file"
                                     accept=".jpg, .jpeg, .png"
                                     onChange={handleProfilePhotoChange}
-
-                                    className={`file:bg-[#0F766E] file:text-white file:border-0 file:hover:bg-teal-800 file:hover:cursor-pointer file:py-1.5 file:text-sm border-2 w-11/12 focus:ring-[#139086] focus:border-[#139086] ${profilePhotoError ? "border-red-500" : "border-[#0F766E]"}`}
+                                    className="hidden"
                                 />
+                                <label
+                                    htmlFor="images"
+                                    className="cursor-pointer inline-block bg-gray-400 hover:bg-gray-500 text-white text-sm px-2 py-1 rounded-md"
+                                >
+                                    Select Photo
+                                </label>
                                 {profilePhotoError && <p className="text-red-500">{profilePhotoError}</p>}
                             </div>
                             {profilePhotoPreview && (

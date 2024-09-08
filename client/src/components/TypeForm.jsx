@@ -4,6 +4,7 @@ import axios from 'axios';
 
 const TypeForm = ({ type, onClose }) => {
     const [name, setName] = useState('');
+    const token = sessionStorage.getItem('token');
 
     useEffect(() => {
         if (type) {
@@ -15,9 +16,9 @@ const TypeForm = ({ type, onClose }) => {
         e.preventDefault();
         try {
             if (type) {
-                await axios.put(`http://localhost:5200/type/${type._id}`, { name }, {withCredentials:true});
+                await axios.put(`http://localhost:5200/type/${type._id}`, { name }, { headers: { Authorization: `Bearer ${token}` } });
             } else {
-                await axios.post('http://localhost:5200/type', { name }, {withCredentials:true});
+                await axios.post('http://localhost:5200/type', { name }, { headers: { Authorization: `Bearer ${token}` } });
             }
             onClose();
         } catch (error) {

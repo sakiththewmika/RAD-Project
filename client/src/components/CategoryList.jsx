@@ -9,6 +9,7 @@ const CategoryList = () => {
     const [showCategoryForm, setShowCategoryForm] = useState(false);
     const [showConfirmPopup, setShowConfirmPopup] = useState(false);
     const [itemToDelete, setItemToDelete] = useState(null);
+    const token = sessionStorage.getItem('token');
 
     useEffect(() => {
         fetchCategories();
@@ -16,7 +17,7 @@ const CategoryList = () => {
 
     const fetchCategories = async () => {
         try {
-            const response = await axios.get('http://localhost:5200/category', {withCredentials:true});
+            const response = await axios.get('http://localhost:5200/category', { headers: { Authorization: `Bearer ${token}` } });
             setCategories(response.data.data);
         } catch (error) {
             console.error('Error fetching categories', error);
@@ -45,7 +46,7 @@ const CategoryList = () => {
 
     const confirmDelete = async () => {
         try {
-            await axios.delete(`http://localhost:5200/category/${itemToDelete}`, {withCredentials:true});
+            await axios.delete(`http://localhost:5200/category/${itemToDelete}`, { headers: { Authorization: `Bearer ${token}` } });
             fetchCategories();
             setShowConfirmPopup(false);
         } catch (error) {

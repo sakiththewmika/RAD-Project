@@ -2,25 +2,29 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import { useSnackbar } from "notistack";
 
 const RemoveServiceModal = ({ serviceID, onClose }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const {user} = useAuth();
-    const {listID} = useParams();
+    const { user } = useAuth();
+    const { listID } = useParams();
+    const { enqueueSnackbar } = useSnackbar();
+    const token = sessionStorage.getItem('token');
 
     const handleRemoveService = () => {
         setLoading(true);
         axios
-            .delete(`http://localhost:5200/list/${listID}/service/${serviceID}`, { withCredentials: true })
-            .then(() => {
+            .delete(`http://localhost:5200/list/${listID}/service/${serviceID}`, { headers: { Authorization: `Bearer ${token}` } })
+            .then((res) => {
                 setLoading(false);
-                onClose(); 
+                enqueueSnackbar(res.data.message, { variant: 'success' });
+                onClose();
             })
             .catch((err) => {
                 setLoading(false);
-                console.error(err);
-                setError('An error occurred while removing the list');
+                setError(err.response.data.message);
+                enqueueSnackbar(err.response.data.message, { variant: 'error' });
             });
     };
 

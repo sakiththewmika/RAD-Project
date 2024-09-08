@@ -13,7 +13,6 @@ import ProviderDashboard from './pages/ProviderDashboard';
 import AddService from './pages/AddService';
 import EditService from './pages/EditService';
 import ServiceDetails from './pages/ServiceDetails';
-import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
 import PlannerDashboard from './pages/PlannerDashboard';
 import ListDetails from './pages/ListDetail';
@@ -37,7 +36,6 @@ const App = () => {
                             <Route path="/register" element={<RegisterUser />} />
                             <Route path="/login" element={<LoginPage />} />
                             <Route path="/adminlogin" element={<AdminLogin />} />
-                            <Route path="/profile" element={<Profile />} />
                             <Route path="/services" element={<ServicePage />} />
                             <Route path="/services/:id" element={<ServiceDetails />} />
                             <Route path="/admin" element={<AdminDashboard />} />

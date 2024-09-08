@@ -22,19 +22,20 @@ router.post('/', async (req, res) => {
             throw new Error('Invalid credentials');
         }
         const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '2h' });
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', // Set to true if using https
-            maxAge: 7200000, // 2 hour
-            sameSite: 'strict'
-        });
+        // res.cookie('token', token, {
+        //     httpOnly: true,
+        //     secure: process.env.NODE_ENV === 'production', // Set to true if using https
+        //     maxAge: 7200000, // 2 hour
+        //     sameSite: 'strict'
+        // });
         res.status(200).json({
             _id: user._id,
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
             role: user.role,
-            profilePhoto: user.profilePhoto
+            profilePhoto: user.profilePhoto,
+            token
         });
     } catch (error) {
         console.error(error.message);

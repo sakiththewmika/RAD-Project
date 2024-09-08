@@ -4,6 +4,7 @@ import axios from 'axios'
 const UserList = () => {
     const [planners, setPlanners] = useState([])
     const [providers, setProviders] = useState([])
+    const token = sessionStorage.getItem('token')
 
     useEffect(() => {
         fetchUsers()
@@ -11,7 +12,7 @@ const UserList = () => {
 
     const fetchUsers = async () => {
         try {
-            const response = await axios.get('http://localhost:5200/user', {withCredentials:true})
+            const response = await axios.get('http://localhost:5200/user', { headers: { Authorization: `Bearer ${token}` } })
             const users = response.data.data
 
             const filteredPlanners = users.filter(user => user.role == 'planner')

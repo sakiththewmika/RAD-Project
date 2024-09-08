@@ -59,7 +59,7 @@ const AdminLogin = () => {
     };
 
     return (
-        <div className="flex h-screen p-16 bg-[#0F766E]">
+        <div className="flex items-center h-screen p-16 bg-[#0F766E]">
             <button
                 onClick={() => navigate('/')}
                 className="absolute top-6 z-20">
@@ -69,10 +69,10 @@ const AdminLogin = () => {
             </button>
             <div className="w-full md:w-1/2 flex justify-center items-center bg-transparent h-full">
                 <div className="w-3/4 max-w-md mx-auto">
-                    <img src='/assets/login2.png' alt="Login" className="w-full mx-auto" />
+                    <img src='/assets/Admin.png' alt="Login" className="w-full mx-auto" />
                 </div>
             </div>
-            <div className="w-full md:w-1/2 flex justify-center items-center bg-white h-full drop-shadow-2xl">
+            <div className="w-full md:w-1/2 flex justify-center items-center bg-white h-2/3 drop-shadow-2xl">
                 <div className="w-3/4 max-w-md mx-auto">
                     <div className="mb-8">
                         <h1 className="text-3xl text-gray-700 font-semibold text-center">Sign In</h1>

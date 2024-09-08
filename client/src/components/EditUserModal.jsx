@@ -13,6 +13,7 @@ const EditUserNameModal = ({ onClose }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const { enqueueSnackbar } = useSnackbar();
+    const token = sessionStorage.getItem('token');
 
     const handleImagesChange = (e) => {
         const file = e.target.files[0]; 
@@ -34,6 +35,11 @@ const EditUserNameModal = ({ onClose }) => {
         return nameRegex.test(name);
     };
 
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test
+    }
+
     const handleEditUser = (e) => {
         e.preventDefault();
         if (!firstName || !lastName) {
@@ -42,6 +48,11 @@ const EditUserNameModal = ({ onClose }) => {
         }
         if (!validateName(firstName) || !validateName(lastName)) {
             setError('Names must only contain letters.');
+            return;
+        }
+
+        if (!validateEmail(email)) {
+            setError('Please enter a valid email address');
             return;
         }
 
@@ -55,16 +66,17 @@ const EditUserNameModal = ({ onClose }) => {
 
         setLoading(true);
         axios
-            .put(`http://localhost:5200/user`, formdata, { withCredentials: true })
-            .then(() => {
+            .put(`http://localhost:5200/user`, formdata, { headers: { Authorization: `Bearer ${token}` } })
+            .then((res) => {
                 setLoading(false);
                 onClose();
-                enqueueSnackbar('User profile updated successfully', { variant: 'success' });
+                enqueueSnackbar(res.data.message, { variant: 'success' });
                 window.location.reload();
             })
             .catch((err) => {
                 setLoading(false);
-                setError('An error occurred while editing the user');
+                setError(err.response.data.message);
+                enqueueSnackbar(err.response.data.message, { variant: 'error' });
             });
     };
 
@@ -98,6 +110,7 @@ const EditUserNameModal = ({ onClose }) => {
                             <input
                                 id="images"
                                 type="file"
+                                accept=".jpg, .jpeg, .png"
                                 onChange={handleImagesChange}
                                 className="hidden"
                             />

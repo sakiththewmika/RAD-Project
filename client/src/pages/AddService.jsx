@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import ReactQuill from "react-quill";
+import { useSnackbar } from "notistack";
 import "react-quill/dist/quill.snow.css";
 import "./Editor.css";
 
@@ -50,6 +51,8 @@ const AddService = () => {
     const [imagesError, setImagesError] = useState("");
     const navigate = useNavigate();
     const { user } = useAuth();
+    const { enqueueSnackbar } = useSnackbar();
+    const token = sessionStorage.getItem('token');
 
     useEffect(() => {
         setLoading(true);
@@ -241,11 +244,13 @@ const AddService = () => {
             });
 
             try {
-                await axios.post("http://localhost:5200/service", formData, { withCredentials: true });
+                await axios.post("http://localhost:5200/service", formData, { headers: { Authorization: `Bearer ${token}` } });
                 navigate("/provider");
+                enqueueSnackbar("Service added successfully", { variant: "success" });
             } catch (error) {
                 console.error(error);
-                setError("Something went wrong");
+                setError(error.response.data.message);
+                enqueueSnackbar(error.response.data.message, { variant: "error" });
             }
         }
     }

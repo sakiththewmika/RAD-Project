@@ -12,11 +12,12 @@ const ListDetails = () => {
     const [isRemoveServiceModalOpen, setIsRemoveServiceModalOpen] = useState(false);
     const { user } = useAuth();
     const navigate = useNavigate();
+    const token = sessionStorage.getItem('token');
 
     const fetchListDetails = async () => {
         try {
             setLoading(true);
-            const res = await axios.get(`http://localhost:5200/list/${listID}`, { withCredentials: true });
+            const res = await axios.get(`http://localhost:5200/list/${listID}`, { headers: { Authorization: `Bearer ${token}` } });
             setList(res.data.data);
         } catch (err) {
             console.error(err);
