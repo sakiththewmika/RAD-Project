@@ -192,16 +192,16 @@ router.get('/:id', authentication, authorization(['admin','planner', 'provider']
 //route to update a service by id
 router.put('/:id', authentication, authorization(['provider']), upload.array('images', 5), async (req, res) => {
     try {
-        const { userID, categoryID, categoryName, typeID, typeName, description, title, email, mobile, phone, city, price } = req.body;
+        const { userID, categoryID, categoryName, typeID, typeName, description, title, email, mobile, phone, city, price, prevImages } = req.body;
 
         if (!userID || !categoryID || !description || !title || !typeID || !price) {
             return res.status(400).send({ message: 'All fields are required' });
         }
 
         // Handling image files
-        let images = [];
+        let images = [ ...prevImages ]; // Copy previous images array
         if (req.files && req.files.length > 0) {
-            images = req.files.map(file => file.path); // Store file paths in images array
+            images = [ ...images, ...req.files.map(file => file.path) ]; // Store file paths in images array
         }
 
         const { id } = req.params;

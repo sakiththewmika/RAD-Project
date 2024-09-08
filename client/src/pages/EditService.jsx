@@ -199,10 +199,9 @@ const EditService = () => {
         if (!isValid) {
             setImagesError("Please select only JPEG or PNG image files");
         } else {
-            setImages((prevImages) => [...prevImages, ...files]);
+            setImages([...images, ...files]);
             const newImagePreviews = files.map((file) => URL.createObjectURL(file));
             setImagesPreview((prevPreviews) => [...prevPreviews, ...newImagePreviews]);
-    
             setImagesError("");
         }
     };
@@ -212,7 +211,7 @@ const EditService = () => {
         const updatedPreviews = imagesPreview.filter((_, i) => i !== index);
         setImages(updatedImages);
         setImagesPreview(updatedPreviews);
-        setImagesPreview(updatedPreviews);
+        setPrevImages(prevImages.filter((_, i) => i !== index));
     };
 
     const handleSubmit = async (e) => {
@@ -274,14 +273,14 @@ const EditService = () => {
             formData.append("email", email);
             formData.append("mobile", mobile);
             formData.append("phone", phone);
-
-            // Append images to FormData
             images.forEach((image) => {
                 formData.append("images", image);
             });
+            prevImages.forEach((image) => {
+                formData.append("prevImages", image);
+            });
 
             try {
-                console.log(formData);
                 await axios.put(`http://localhost:5200/service/${id}`, formData, { headers: { Authorization: `Bearer ${token}` } });
                 navigate("/provider");
                 enqueueSnackbar("Service updated successfully", { variant: "success" });
