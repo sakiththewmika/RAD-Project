@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import BackButton from "../components/BackButton";
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");
@@ -76,13 +77,9 @@ const LoginPage = () => {
 
     return (
         <div className="flex h-screen p-16 bg-[#0F766E]">
-            <button
-                onClick={() => navigate('/')}
-                className="absolute top-6 z-20">
-                <svg class="w-7 h-7 text-gray-800 hover:text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5H1m0 0 4 4M1 5l4-4" />
-                </svg>
-            </button>
+            <div className="absolute top-6 z-20">
+                <BackButton />
+            </div>
             <div className="w-full md:w-1/2 flex justify-center items-center bg-transparent h-full">
                 <div className="w-3/4 max-w-md mx-auto">
                     {!isProvider ? (

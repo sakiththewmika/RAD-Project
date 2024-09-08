@@ -60,17 +60,19 @@ const CategoryList = () => {
     };
 
     return (
-        <div>
-            <h1 className="text-2xl font-bold mb-4">Category List</h1>
+        <div className="p-6 min-h-screen">
             {showCategoryForm && <CategoryForm category={currentCategory} onClose={handleCategoryFormClose} />}
-            <button className="bg-green-500 text-white px-4 py-2 rounded mb-4 hover:bg-green-600" onClick={handleAddCategory}>
+            <button
+                className="bg-green-500 text-white px-4 py-2 rounded mb-4 hover:bg-green-600"
+                onClick={handleAddCategory}
+            >
                 Add Category
             </button>
-            <ul className="list-none p-0">
+            <ul className="list-none p-0 space-y-2">
                 {categories.map((category) => (
-                    <li key={category._id} className="flex justify-between items-center p-2 mb-2 border border-gray-300 rounded">
-                        {category.name}
-                        <span className="flex space-x-2">
+                    <li key={category._id} className="flex justify-between items-center p-4 bg-white shadow-md rounded-lg border border-gray-300">
+                        <span className="text-lg font-semibold text-gray-700">{category.name}</span>
+                        <span className="flex space-x-3">
                             <button
                                 className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
                                 onClick={() => handleEditCategory(category)}

@@ -1,4 +1,3 @@
-// TypeList.jsx
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import TypeForm from './TypeForm';
@@ -61,17 +60,19 @@ const TypeList = () => {
     };
 
     return (
-        <div>
-            <h1 className="text-2xl font-bold mb-4">Type List</h1>
+        <div className="p-6 min-h-screen">
             {showTypeForm && <TypeForm type={currentType} onClose={handleTypeFormClose} />}
-            <button className="bg-green-500 text-white px-4 py-2 rounded mb-4 hover:bg-green-600" onClick={handleAddType}>
+            <button
+                className="bg-green-500 text-white px-4 py-2 rounded mb-4 hover:bg-green-600"
+                onClick={handleAddType}
+            >
                 Add Type
             </button>
-            <ul className="list-none p-0">
+            <ul className="list-none p-0 space-y-2">
                 {types.map((type) => (
-                    <li key={type._id} className="flex justify-between items-center p-2 mb-2 border border-gray-300 rounded">
-                        {type.name}
-                        <span className="flex space-x-2">
+                    <li key={type._id} className="flex justify-between items-center p-4 bg-white shadow-md rounded-lg border border-gray-300">
+                        <span className="text-lg font-semibold text-gray-700">{type.name}</span>
+                        <span className="flex space-x-3">
                             <button
                                 className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
                                 onClick={() => handleEditType(type)}

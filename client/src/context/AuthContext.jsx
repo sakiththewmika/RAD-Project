@@ -19,7 +19,6 @@ export const AuthProvider = ({ children }) => {
                 .then((res) => {
                     setUser(res.data);
                     sessionStorage.setItem('user', JSON.stringify(res.data));
-                    sessionStorage.setItem('token', res.data.token);
                     setLoading(false);
                 })
                 .catch((err) => {

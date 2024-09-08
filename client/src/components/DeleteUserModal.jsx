@@ -10,12 +10,13 @@ const DeleteUserModal = ({ onClose }) => {
     const { enqueueSnackbar } = useSnackbar();
     const navigate = useNavigate();
     const { logout } = useAuth();
+    const { user } = useAuth();
     const token = sessionStorage.getItem('token');
 
     const handleDeleteUser = () => {
         setLoading(true);
         axios
-            .delete(`http://localhost:5200/user`, { headers: { Authorization: `Bearer ${token}` } })
+            .delete(`http://localhost:5200/user/${user._id}`, { headers: { Authorization: `Bearer ${token}` } })
             .then((res) => {
                 setLoading(false);
                 enqueueSnackbar(res.data.message, { variant: 'success' });
