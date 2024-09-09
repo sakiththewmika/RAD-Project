@@ -57,7 +57,7 @@ const AddService = () => {
     useEffect(() => {
         setLoading(true);
         axios
-            .get("http://localhost:5200/category")
+            .get("http://localhost:5200/category", { headers: { Authorization: `Bearer ${token}` } })
             .then((res) => {
                 setCategories(res.data.data);
                 setLoading(false);
@@ -71,7 +71,7 @@ const AddService = () => {
     useEffect(() => {
         setLoading(true);
         axios
-            .get("http://localhost:5200/type")
+            .get("http://localhost:5200/type", { headers: { Authorization: `Bearer ${token}` } })
             .then((res) => {
                 setTypes(res.data.data);
                 setLoading(false);
