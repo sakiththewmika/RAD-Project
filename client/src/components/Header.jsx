@@ -135,6 +135,7 @@ const Header = () => {
                                         handleDeleteCardClick();
                                     }}
                                     className="block px-4 py-1 text-sm text-gray-500 rounded-b-lg hover:bg-gray-200 w-full"
+                                
                                 >
                                     Delete Account
                                 </button>
