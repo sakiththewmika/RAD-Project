@@ -43,6 +43,9 @@ const upload = multer({
 router.use('/uploads', express.static(`${__dirname}/uploads`));
 
 // Route to register a new user
+//post - create
+//await - waits db response , async - 
+
 router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     try {
         const { firstName, lastName, email, password, mobile, role } = req.body;
@@ -89,6 +92,7 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
 });
 
 // Route to get all users
+//get - search/select
 router.get('/', authentication, authorization(['admin']), async (req, res) => {
     try {
         const users = await User.find();
@@ -124,6 +128,7 @@ router.get('/profile', authentication, authorization(['admin', 'planner', 'provi
 });
 
 //route to update a user by id
+//put - update
 router.put('/', authentication, authorization(['planner', 'provider', 'admin']), upload.single('profilePhoto'), async (req, res) => {
     try {
         if (
