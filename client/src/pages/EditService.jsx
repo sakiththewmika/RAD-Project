@@ -38,6 +38,7 @@ const EditService = () => {
     const [phone, setPhone] = useState("");
     const [images, setImages] = useState([]);
     const [prevImages, setPrevImages] = useState([]);
+    const [removedPrevImages, setRemovedPrevImages] = useState([]);
     const [imagesPreview, setImagesPreview] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -207,12 +208,25 @@ const EditService = () => {
     };
     
     const handleRemoveImage = (index) => {
+        // Get the image that is being removed from prevImages
+        const imageToRemove = prevImages[index];
+    
+        // Filter out the image at the given index from images, imagesPreview, and prevImages
         const updatedImages = images.filter((_, i) => i !== index);
         const updatedPreviews = imagesPreview.filter((_, i) => i !== index);
+        const updatedPrevImages = prevImages.filter((_, i) => i !== index);
+    
+        // If the image exists in prevImages, add it to removedPrevImages
+        if (imageToRemove) {
+            setRemovedPrevImages((removedPrevImages) => [...removedPrevImages, imageToRemove]);
+        }
+    
+        // Update the state with the new arrays
         setImages(updatedImages);
         setImagesPreview(updatedPreviews);
-        setPrevImages(prevImages.filter((_, i) => i !== index));
+        setPrevImages(updatedPrevImages);
     };
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -244,7 +258,7 @@ const EditService = () => {
         if (!phone) {
             setPhoneError("Phone is required");
         }
-        if (images.length === 0) {
+        if (images.length === 0 && prevImages.length === 0) {
             setImagesError("Images are required");
         }
 
@@ -258,7 +272,7 @@ const EditService = () => {
             email &&
             mobile &&
             phone &&
-            images.length > 0
+            prevImages.length > 0 
         ) {
             const formData = new FormData();
             formData.append("userID", user._id);
@@ -276,14 +290,18 @@ const EditService = () => {
             images.forEach((image) => {
                 formData.append("images", image);
             });
-            prevImages.forEach((image) => {
-                formData.append("prevImages", image);
+            prevImages.forEach((image, index) => {
+                formData.append(`prevImages[${index}]`, image);
+            });
+            removedPrevImages.forEach((image, index) => {
+                formData.append(`removedPrevImages[${index}]`, image);
             });
 
             try {
                 await axios.put(`http://localhost:5200/service/${id}`, formData, { headers: { Authorization: `Bearer ${token}` } });
                 navigate("/provider");
                 enqueueSnackbar("Service updated successfully", { variant: "success" });
+                console.log(removedPrevImages);
             }
             catch (error) {
                 console.error(error);
