@@ -1,8 +1,11 @@
 import express from 'express';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import { join, dirname, resolve } from 'path';
 import multer from 'multer';
+import fs from 'fs';
 import User from '../models/userModel.js';
+import Review from '../models/reviewModel.js';
+import Service from '../models/serviceModel.js';
 import { authentication, authorization } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -120,22 +123,6 @@ router.get('/profile', authentication, authorization(['admin', 'planner', 'provi
     }
 });
 
-// route to get a user by id
-// router.get('/:id', async (req, res) => {
-//     try {
-//         const { id } = req.params;
-//         const user = await User.findById(id);
-//         if (user) {
-//             return res.status(200).send(user);
-//         }
-//         return res.status(404).send({ message: 'User not found' });
-
-//     } catch (error) {
-//         console.log(error.message);
-//         res.status(500).send({ message: error.message });
-//     }
-// });
-
 //route to update a user by id
 router.put('/', authentication, authorization(['planner', 'provider', 'admin']), upload.single('profilePhoto'), async (req, res) => {
     try {
@@ -195,37 +182,33 @@ router.put('/password', authentication, authorization(['planner', 'provider', 'a
     }
 });
 
-
-//route to change user email by previous email and role
-// router.put('/email', authentication, authorization(['planner', 'provider', 'admin']), async (req, res) => {
-//     try {
-//         if (!req.body.email || !req.body.newEmail || !req.body.role) {
-//             return res.status(400).send({ message: 'Email and role are required' });
-//         }
-//         const result = await User.findOneAndUpdate(
-//             { email: req.body.email, role: req.body.role },
-//             { email: req.body.newEmail }
-//         );
-
-//         if (!result) {
-//             return res.status(404).send({ message: 'User not found' });
-//         }
-//         return res.status(200).send({ message: 'Email updated successfully' });
-
-//     } catch (error) {
-//         console.log(error.message);
-//         res.status(500).send({ message: error.message });
-//     }
-// });
-
 //route to delete a user by id
-router.delete('/', authentication, authorization(['planner', 'provider', 'admin']), async (req, res) => {
+router.delete('/:id', authentication, authorization(['admin', 'planner', 'provider']), async (req, res) => {
     try {
-        const result = await User.findByIdAndDelete(req.user.id);
-
+        const { id } = req.params;
+        const result = await User.findByIdAndDelete(id);
         if (!result) {
             return res.status(404).send({ message: 'User not found' });
         }
+        if (result.role === 'provider') {
+            // Delete all services by the user
+            await Service.deleteMany({ userID: id });
+        }
+        if (result.role === 'planner') {
+            // Delete all reviews by the user
+            await Review.deleteMany({ plannerID: id });
+        }
+        // Delete profile photo
+        if (result.profilePhoto !== 'uploads/Profile.png') {
+                const pardir = resolve(__dirname, '..');
+                const filePath = join(pardir, result.profilePhoto);
+                fs.unlink(filePath, (err) => {
+                    if (err) {
+                        console.error(err);
+                    } 
+                });
+        }
+
         return res.status(200).send({ message: 'User deleted successfully' });
 
     } catch (error) {
@@ -233,63 +216,5 @@ router.delete('/', authentication, authorization(['planner', 'provider', 'admin'
         res.status(500).send({ message: error.message });
     }
 });
-
-// //route to get all lists by userID with services
-// router.get('/lists/:userID', async (req, res) => {
-//     try {
-//         const { userID } = req.params;
-//         const user = await User.findById(userID);
-//         if (!user) {
-//             return res.status(404).send({ message: 'User not found' });
-//         }
-//         return res.status(200).send({
-//             count: user.lists.length,
-//             data: user.lists
-//         });
-//     } catch (error) {
-//         console.log(error.message);
-//         res.status(500).send({ message: error.message });
-//     }
-// });
-
-
-
-// //route to add list to user by userID
-// router.post('/lists/:userID', async (req, res) => {
-//     try {
-//         const { userID } = req.params;
-//         const user = await User.findById(userID);
-//         if (!user) {
-//             return res.status(404).send({ message: 'User not found' });
-//         }
-//         user.lists.push(req.body);
-//         await user.save();
-//         return res.status(200).send({ message: 'List added successfully' });
-//     } catch (error) {
-//         console.log(error.message);
-//         res.status(500).send({ message: error.message });
-//     }
-// });
-
-// //route to update list by id
-// router.put('/lists/:id', async (req, res) => {
-//     try {
-//         if (!req.body.name) {
-//             return res.status(400).send({ message: 'Name is required' });
-//         }
-//         const { id } = req.params;
-//         const user = await User.findOneAndUpdate(
-//             { 'lists._id': id },
-//             { $set: { 'lists.$.name': req.body.name } }
-//         );
-//         if (!user) {
-//             return res.status(404).send({ message: 'List not found' });
-//         }
-//         return res.status(200).send({ message: 'List updated successfully' });
-//     } catch (error) {
-//         console.log(error.message);
-//         res.status(500).send({ message: error.message });
-//     }
-// });
 
 export default router;

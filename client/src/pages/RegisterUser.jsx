@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import BackButton from "../components/BackButton";
 
 const RegisterUser = () => {
     const [profilePhoto, setProfilePhoto] = useState(null);
@@ -132,13 +133,9 @@ const RegisterUser = () => {
 
     return (
         <div className="flex h-screen p-4 sm:p-16 bg-[#0F766E]">
-            <button
-                onClick={() => navigate('/')}
-                className="absolute top-6 z-20">
-                <svg className="w-7 h-7 text-gray-800 hover:text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5H1m0 0 4 4M1 5l4-4" />
-                </svg>
-            </button>
+            <div className="absolute top-6 z-20">
+                <BackButton />
+            </div>
             <div className="hidden md:flex w-full md:w-2/5 justify-center items-center bg-transparent h-full ">
                 <div className="w-3/4 max-w-md mx-auto">
                     <img src='/assets/Signup1.png' alt="Login" className="w-full mx-auto" />

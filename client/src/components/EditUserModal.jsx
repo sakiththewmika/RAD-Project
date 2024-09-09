@@ -31,7 +31,7 @@ const EditUserNameModal = ({ onClose }) => {
     };
 
     const validateName = (name) => {
-        const nameRegex = /^[A-Za-z]+$/;
+        const nameRegex = /^[A-Za-z\s]+$/;
         return nameRegex.test(name);
     };
 
@@ -73,6 +73,7 @@ const EditUserNameModal = ({ onClose }) => {
                 enqueueSnackbar(res.data.message, { variant: 'success' });
                 sessionStorage.removeItem('user');
                 window.location.reload();
+                console.log(res.data.data);
             })
             .catch((err) => {
                 setLoading(false);

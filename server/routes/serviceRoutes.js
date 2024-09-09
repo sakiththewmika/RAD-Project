@@ -1,9 +1,11 @@
 import express from 'express';
 import Service from '../models/serviceModel.js';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import { join, dirname, resolve } from 'path';
 import multer from 'multer';
+import fs from 'fs';
 import User from '../models/userModel.js';
+import Review from '../models/reviewModel.js';
 import { authentication, authorization } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -192,16 +194,16 @@ router.get('/:id', authentication, authorization(['admin','planner', 'provider']
 //route to update a service by id
 router.put('/:id', authentication, authorization(['provider']), upload.array('images', 5), async (req, res) => {
     try {
-        const { userID, categoryID, categoryName, typeID, typeName, description, title, email, mobile, phone, city, price } = req.body;
+        const { userID, categoryID, categoryName, typeID, typeName, description, title, email, mobile, phone, city, price, prevImages } = req.body;
 
         if (!userID || !categoryID || !description || !title || !typeID || !price) {
             return res.status(400).send({ message: 'All fields are required' });
         }
 
         // Handling image files
-        let images = [];
+        let images = [ ...prevImages ]; // Copy previous images array
         if (req.files && req.files.length > 0) {
-            images = req.files.map(file => file.path); // Store file paths in images array
+            images = [ ...images, ...req.files.map(file => file.path) ]; // Store file paths in images array
         }
 
         const { id } = req.params;
@@ -248,18 +250,42 @@ router.delete('/:id', authentication, authorization(['admin', 'provider']), asyn
             return res.status(404).send({ message: 'Service not found' });
         }
 
-        // remove the service from all lists in users
+        // Remove the service from all lists in users
         await User.updateMany(
             { 'lists.services': id },
-            { $pull: { 'lists.$.services': id } }
+            { $pull: { 'lists.$[].services': id } } // Pull the service ID from all lists
         );
+
+        // Remove reviews of the service
+        await Review.deleteMany({ serviceID: id });
+
+        // Remove images in uploads folder
+        const promises = deletedService.images.map(image => {
+            const pardir = resolve(__dirname, '..');
+            const filePath = join(pardir, image); 
+            return new Promise((resolve, reject) => {
+                fs.unlink(filePath, (err) => {
+                    if (err) {
+                        console.error(err);
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                });
+            });
+        });
+
+        await Promise.all(promises).catch((err) => {
+            console.error('Error deleting images:', err);
+        });
 
         return res.status(200).send({ message: 'Service deleted successfully' });
 
     } catch (error) {
-        console.log(error.message);
-        res.status(500).send({ message: error.message });
+        console.error(error.message);
+        return res.status(500).send({ message: error.message });
     }
 });
+
 
 export default router;

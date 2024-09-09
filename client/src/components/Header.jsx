@@ -100,28 +100,11 @@ const Header = () => {
                                     <span className="block text-sm text-gray-500 truncate">{user.email}</span>
                                     <span className="block text-sm text-gray-400 truncate">{user.role.charAt(0).toUpperCase() + user.role.slice(1)}</span>
                                     <button
-                                    onClick={(e) => {handleEditCardClick(e);}}
-                                     className="absolute z-10 top-16 right-2">
+                                        onClick={(e) => { handleEditCardClick(e); }}
+                                        className="absolute z-10 top-16 right-2">
                                         <BsPencilSquare />
                                     </button>
                                 </div>
-                                <ul aria-labelledby="user-menu-button">
-                                    <li>
-                                        {user.role === "admin" && (
-                                            <Link to="/admin" className="block px-4 py-3 text-md text-center text-gray-800 hover:bg-gray-200" onClick={handleDropdownItemClick}>Dashboard</Link>
-                                        )}
-                                    </li>
-                                    <li>
-                                        {user.role === "planner" && (
-                                            <Link to="/planner" className="block px-4 py-3 text-md text-center text-gray-800 hover:bg-gray-200" onClick={handleDropdownItemClick}>Dashboard</Link>
-                                        )}
-                                    </li>
-                                    <li>
-                                        {user.role === "provider" && (
-                                            <Link to="/provider" className="block px-4 py-3 text-md text-center text-gray-800 hover:bg-gray-200" onClick={handleDropdownItemClick}>My Services</Link>
-                                        )}
-                                    </li>
-                                </ul>
                                 <button
                                     onClick={() => {
                                         handlePasswordCardClick();
@@ -191,6 +174,31 @@ const Header = () => {
                                 Contact
                             </Link>
                         </li>
+
+                        {user && user.role === "admin" && (
+                            <li>
+                                <Link to="/admin" onClick={handleNavCollapse} className={`block text-lg py-2 px-3 rounded md:p-0 ${location.pathname === '/admin' ? 'bg-teal-500 md:bg-transparent md:text-teal-700' : ' text-black hover:bg-teal-500/40 md:hover:bg-transparent md:bg-transparent md:hover:text-teal-700'}`} aria-current={location.pathname === '/admin' ? 'admin dashboard page' : undefined}>
+                                    Dashboard
+                                </Link>
+                            </li>
+                        )}
+
+                        {user && user.role === "planner" && (
+                            <li>
+                                <Link to="/planner" onClick={handleNavCollapse} className={`block text-lg py-2 px-3 rounded md:p-0 ${location.pathname === '/planner' ? 'bg-teal-500 md:bg-transparent md:text-teal-700' : ' text-black hover:bg-teal-500/40 md:hover:bg-transparent md:bg-transparent md:hover:text-teal-700'}`} aria-current={location.pathname === '/planner' ? 'planner dashboard page' : undefined}>
+                                    Dashboard
+                                </Link>
+                            </li>
+                        )}
+
+                        {user && user.role === "provider" && (
+                            <li>
+                                <Link to="/provider" onClick={handleNavCollapse} className={`block text-lg py-2 px-3 rounded md:p-0 ${location.pathname === '/provider' ? ' bg-teal-500 md:bg-transparent md:text-teal-700' : ' text-black hover:bg-teal-500/40 md:hover:bg-transparent md:bg-transparent md:hover:text-teal-700'}`} aria-current={location.pathname === '/provider' ? 'provider dashboard page' : undefined}>
+                                    My Services
+                                </Link>
+                            </li>
+                        )}
+
                     </ul>
                 </div>
                 {isDeleteModalOpen && user && (
