@@ -13,8 +13,12 @@ const ChangePasswordModal = ({ onClose }) => {
     const token = sessionStorage.getItem('token');
 
     const handleEditUser = (e) => {
-        if (!password || !confirmPassword) {
+        if (!password || !confirmPassword ) {
             setError('All fields are required');
+            return;
+        }
+        if (password !== confirmPassword) {
+            setError('Passwords do not match');
             return;
         }
 

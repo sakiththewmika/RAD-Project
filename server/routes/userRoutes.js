@@ -126,7 +126,7 @@ router.get('/profile', authentication, authorization(['admin', 'planner', 'provi
         res.status(500).json({ message: error.message });
     }
 });
-
+//Authentication before accessing all routes
 //route to update a user by id
 //put - update
 router.put('/', authentication, authorization(['planner', 'provider', 'admin']), upload.single('profilePhoto'), async (req, res) => {
@@ -148,6 +148,7 @@ router.put('/', authentication, authorization(['planner', 'provider', 'admin']),
             email: email,
             profilePhoto: req.file ? req.file.path : req.user.profilePhoto
         };
+        //db update & stores previous data in result
         const result = await User.findByIdAndUpdate(req.user.id, edituser);
 
         if (!result) {
@@ -162,6 +163,7 @@ router.put('/', authentication, authorization(['planner', 'provider', 'admin']),
 });
 
 //route to update user password by id
+
 router.put('/password', authentication, authorization(['planner', 'provider', 'admin']), async (req, res) => {
     try {
         const { password } = req.body;
