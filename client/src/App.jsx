@@ -16,6 +16,8 @@ import ServiceDetails from './pages/ServiceDetails';
 import AdminDashboard from './pages/AdminDashboard';
 import PlannerDashboard from './pages/PlannerDashboard';
 import ListDetails from './pages/ListDetail';
+import ProtectedRoute from './components/ProtectedRoute';
+import AdminProtectedRoute from './components/AdminProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 import { SnackbarProvider } from 'notistack';
 import './App.css'
@@ -28,22 +30,22 @@ const App = () => {
             <SnackbarProvider>
                 <div className="flex flex-col min-h-screen bg-gradient-to-t from-[#0F766E] from-10% to-white to-70%">
                     {!hideHeaderFooter && <Header />}
-                <div className="flex-grow">
+                    <div className="flex-grow">
                         <Routes>
                             <Route path="/" element={<Home />} />
-                            <Route path='/about' element={<About/>}/>
-                            <Route path='/contact' element={<Contact/>}/>
+                            <Route path='/about' element={<About />} />
+                            <Route path='/contact' element={<Contact />} />
                             <Route path="/register" element={<RegisterUser />} />
                             <Route path="/login" element={<LoginPage />} />
                             <Route path="/adminlogin" element={<AdminLogin />} />
                             <Route path="/services" element={<ServicePage />} />
-                            <Route path="/services/:id" element={<ServiceDetails />} />
-                            <Route path="/admin" element={<AdminDashboard />} />
-                            <Route path="/provider" element={<ProviderDashboard />} />
-                            <Route path="/addservice" element={<AddService/>} />
-                            <Route path="/editservice/:id" element={<EditService />} />
-                            <Route path="/planner" element={<PlannerDashboard />} >
-                                <Route path="list/:listID" element={<ListDetails />} />
+                            <Route path="/services/:id" element={<ProtectedRoute element={<ServiceDetails />} roles={['admin', 'provider', 'planner']} />} />
+                            <Route path="/admin" element={<AdminProtectedRoute element={<AdminDashboard />} roles={['admin']} />} />
+                            <Route path="/provider" element={<ProtectedRoute element={<ProviderDashboard />} roles={['provider']} />} />
+                            <Route path="/addservice" element={<ProtectedRoute element={<AddService />} roles={['provider']} />} />
+                            <Route path="/editservice/:id" element={<ProtectedRoute element={<EditService />} roles={['provider']} />} />
+                            <Route path="/planner" element={<ProtectedRoute element={<PlannerDashboard />} roles={['planner']} />} >
+                                <Route path="list/:listID" element={<ProtectedRoute element={<ListDetails />} roles={['planner']} />} />
                             </Route>
                         </Routes>
                     </div>

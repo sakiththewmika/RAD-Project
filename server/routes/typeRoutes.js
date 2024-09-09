@@ -22,7 +22,7 @@ router.post('/', authentication, authorization(['admin']), async (req, res) => {
 });
 
 //route to get all types
-router.get('/', async (req, res) => {
+router.get('/', authentication, authorization(['admin', 'provider']), async (req, res) => {
     try {
         const types = await Type.find();
         return res.status(200).send({

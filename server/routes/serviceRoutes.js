@@ -176,7 +176,7 @@ router.get('/user', authentication, authorization(['provider']), async (req, res
 });
 
 //route to get a service by id
-router.get('/:id', authentication, authorization(['admin','planner', 'provider']), async (req, res) => {
+router.get('/:id', authentication, authorization(['admin', 'planner', 'provider']), async (req, res) => {
     try {
         const { id } = req.params;
         const service = await Service.findById(id).populate('userID', 'firstName lastName');
@@ -194,16 +194,16 @@ router.get('/:id', authentication, authorization(['admin','planner', 'provider']
 //route to update a service by id
 router.put('/:id', authentication, authorization(['provider']), upload.array('images', 5), async (req, res) => {
     try {
-        const { userID, categoryID, categoryName, typeID, typeName, description, title, email, mobile, phone, city, price, prevImages } = req.body;
+        const { userID, categoryID, categoryName, typeID, typeName, description, title, email, mobile, phone, city, price, prevImages, removedPrevImages } = req.body;
 
         if (!userID || !categoryID || !description || !title || !typeID || !price) {
             return res.status(400).send({ message: 'All fields are required' });
         }
 
         // Handling image files
-        let images = [ ...prevImages ]; // Copy previous images array
+        let images = [...prevImages]; // Copy previous images array
         if (req.files && req.files.length > 0) {
-            images = [ ...images, ...req.files.map(file => file.path) ]; // Store file paths in images array
+            images = [...images, ...req.files.map(file => file.path)]; // Store file paths in images array
         }
 
         const { id } = req.params;
@@ -232,6 +232,28 @@ router.put('/:id', authentication, authorization(['provider']), upload.array('im
         if (!updatedService) {
             return res.status(404).send({ message: 'Service not found' });
         }
+        // Remove images from uploads folder
+        if (removedPrevImages && removedPrevImages.length > 0) {
+            const pardir = resolve(__dirname, '..');
+            const promises = removedPrevImages.map(image => {
+                const filePath = join(pardir, image);
+                return new Promise((resolve, reject) => {
+                    fs.unlink(filePath, (err) => {
+                        if (err) {
+                            console.error(err);
+                            reject(err);
+                        } else {
+                            resolve();
+                        }
+                    });
+                });
+            });
+
+            await Promise.all(promises).catch((err) => {
+                console.error('Error deleting images:', err);
+            });
+        }
+
         return res.status(200).send({ message: 'Service updated successfully', data: updatedService });
 
     } catch (error) {
@@ -262,7 +284,7 @@ router.delete('/:id', authentication, authorization(['admin', 'provider']), asyn
         // Remove images in uploads folder
         const promises = deletedService.images.map(image => {
             const pardir = resolve(__dirname, '..');
-            const filePath = join(pardir, image); 
+            const filePath = join(pardir, image);
             return new Promise((resolve, reject) => {
                 fs.unlink(filePath, (err) => {
                     if (err) {
