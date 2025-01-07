@@ -1,26 +1,37 @@
 import express from 'express';
-import { loginUser } from '../services/authService.js';
+import jwt from 'jsonwebtoken';
+import User from '../models/userModel.js';
+import { JWT_SECRET } from '../config.js';
 
 const router = express.Router();
 
 // Route to login a user
 router.post('/', async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, role } = req.body;
 
-        if (!email || !password) {
+        if (!email || !password || !role) {
             return res.status(400).json({ message: 'All fields are required' });
         }
-
-        const { token, user } = await loginUser(email, password);
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', // Set to true if using https
-            maxAge: 3600000, // 1 hour
-            sameSite: 'strict'
+        const user = await User.findOne({ email, role });
+        if (!user) {
+            throw new Error('User not found');
+        }
+        const isMatch = await user.comparePassword(password);
+        if (!isMatch) {
+            throw new Error('Invalid credentials');
+        }
+        const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, { expiresIn: '2h' });
+        
+        res.status(200).json({
+            _id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            role: user.role,
+            profilePhoto: user.profilePhoto,
+            token
         });
-
-        res.status(200).json(user);
     } catch (error) {
         console.error(error.message);
         res.status(500).json({ message: error.message });

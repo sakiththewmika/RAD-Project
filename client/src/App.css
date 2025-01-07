@@ -1,0 +1,45 @@
+#about{
+    overflow-x: hidden;
+}
+@keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .fade-in {
+    animation: fadeIn 2s ease-in-out forwards;
+  }
+  
+
+
+@keyframes flyIn {
+    from{
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to{
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+.fly-in{
+    animation: flyIn 1s ease-in-out forwards;
+}
+@keyframes flyInFromLeft {
+    from{
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to{
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.fly-in-from-left{
+    animation: flyInFromLeft 1s ease-in-out forwards;
+}

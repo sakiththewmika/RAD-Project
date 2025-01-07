@@ -11,7 +11,6 @@ const typeSchema = new mongoose.Schema(
             required: true,
             unique: true,
         },
-
     },
     {
         timestamps: true,

@@ -8,27 +8,33 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios
-            .get("http://localhost:5200/user/profile", { withCredentials: true })
-            .then((res) => {
-                setUser(res.data);
-                setLoading(false);
-            })
-            .catch((err) => {
-                if (err.response && err.response.status === 401) {
-                    setUser(null);
-                } else {
-                    console.log(err);
-                }
-                setLoading(false);
-            });
+        const savedUser = sessionStorage.getItem('user');
+        const token = sessionStorage.getItem('token');
+        if (savedUser) {
+            setUser(JSON.parse(savedUser));
+            setLoading(false);
+        } else {
+            axios
+                .get("http://localhost:5200/user/profile", { headers: { Authorization: `Bearer ${token}` } })
+                .then((res) => {
+                    setUser(res.data);
+                    sessionStorage.setItem('user', JSON.stringify(res.data));
+                    setLoading(false);
+                })
+                .catch((err) => {
+                    setLoading(false);
+                });
+        }
     }, []);
 
-    const login = async (email, password) => {
+    const login = async (email, password, role) => {
         try {
-            const res = await axios.post("http://localhost:5200/login", { email, password }, { withCredentials: true });
+            const res = await axios.post("http://localhost:5200/login", { email, password, role }, { withCredentials: true });
             setUser(res.data);
+            sessionStorage.setItem('user', JSON.stringify(res.data));
+            sessionStorage.setItem('token', res.data.token);
         } catch (err) {
+            console.log(err);
             throw err;
         }
     };
@@ -37,6 +43,8 @@ export const AuthProvider = ({ children }) => {
         try {
             await axios.post("http://localhost:5200/logout", {}, { withCredentials: true });
             setUser(null);
+            sessionStorage.removeItem('user');
+            sessionStorage.removeItem('token');
         } catch (err) {
             console.log(err);
         }

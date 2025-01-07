@@ -1,8 +1,9 @@
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../config.js';
 
-const auth = (req, res, next) => {
-    const token = req.cookies.token;
+const authentication = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
         return res.status(401).json({ message: 'No token provided' });
@@ -18,4 +19,14 @@ const auth = (req, res, next) => {
     });
 };
 
-export default auth;
+
+const authorization = (roles) => {
+    return (req, res, next) => {
+        if (!roles.includes(req.user.role)) {
+            return res.status(403).json({ message: 'Unauthorized' });
+        }
+        next();
+    };
+};
+
+export { authentication, authorization };

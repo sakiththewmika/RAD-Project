@@ -1,116 +1,313 @@
 import express from 'express';
 import Service from '../models/serviceModel.js';
+import { fileURLToPath } from 'url';
+import { join, dirname, resolve } from 'path';
+import multer from 'multer';
+import fs from 'fs';
+import User from '../models/userModel.js';
+import Review from '../models/reviewModel.js';
+import { authentication, authorization } from '../middleware/auth.js';
 
 const router = express.Router();
 
-//route to save a new service
-router.post('/', async (req, res) => {
+// Multer configuration
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/'); // Uploads folder
+    },
+    filename: function (req, file, cb) {
+        cb(null, new Date().toISOString().replace(/:/g, '-') + '-' + file.originalname); // Unique filename
+    }
+});
+
+const fileFilter = (req, file, cb) => {
+    // Accept only jpeg and png files
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+        cb(null, true);
+    } else {
+        cb(new Error('File type not supported'), false);
+    }
+};
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 1024 * 1024 * 10 // 10MB max file size
+    },
+    fileFilter: fileFilter
+});
+
+router.use('/uploads', express.static(`${__dirname}/uploads`));
+
+// Route to save a new service with image upload
+router.post('/', authentication, authorization(['provider']), upload.array('images', 5), async (req, res) => {
     try {
-        if(
-            !req.body.userID ||
-            !req.body.category ||
-            !req.body.description ||
-            !req.body.title ||
-            !req.body.type ||
-            !req.body.price 
-        ) {
-            return res.status(400).send({message: 'All fields are required'});
+        const { userID, categoryID, categoryName, typeID, typeName, description, title, email, mobile, phone, city, price } = req.body;
+
+        if (!userID || !categoryID || !description || !title || !typeID || !price) {
+            return res.status(400).send({ message: 'All fields are required' });
         }
+
+        // Handling image files
+        let images = [];
+        if (req.files && req.files.length > 0) {
+            images = req.files.map(file => file.path); // Store file paths in images array
+        }
+
         const newService = {
-            userID: req.body.userID,
-            category: req.body.category,
-            description: req.body.description,
-            title: req.body.title,
-            type: req.body.type,
-            address: req.body.address,
-            email: req.body.email,
-            mobile: req.body.mobile,
-            phone: req.body.phone,
-            price: req.body.price,
-            images: req.body.images,
+            userID,
+            category: {
+                _id: categoryID,
+                name: categoryName
+            },
+            type: {
+                _id: typeID,
+                name: typeName
+            },
+            description,
+            title,
+            email,
+            mobile,
+            phone,
+            city,
+            price,
+            images // Storing image file paths in the service document
         };
+
         const createdService = await Service.create(newService);
         return res.status(201).send(createdService);
 
     } catch (error) {
         console.log(error.message);
-        res.status(500).send({message: error.message});
+        res.status(500).send({ message: error.message });
     }
 });
 
-//route to get all users
+//route to get all services
 router.get('/', async (req, res) => {
     try {
         const Services = await Service.find();
         return res.status(200).send({
-            count : Services.length,
-            data : Services
+            count: Services.length,
+            data: Services
         });
 
     } catch (error) {
         console.log(error.message);
-        res.status(500).send({message: error.message});
+        res.status(500).send({ message: error.message });
+    }
+});
+
+//route to get all services with user details
+router.get('/details', authentication, authorization(['admin']), async (req, res) => {
+    try {
+        const services = await Service.find().populate('userID', 'firstName lastName email');
+        return res.status(200).send({
+            count: services.length,
+            data: services
+        });
+
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ message: error.message });
+    }
+});
+
+//route to get all categories in services
+router.get('/categories', async (req, res) => {
+    try {
+        const categories = await Service.find().distinct('category.name');
+        return res.status(200).send({
+            count: categories.length,
+            data: categories
+        });
+
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ message: error.message });
+    }
+});
+
+//route to get all types in services
+router.get('/types', async (req, res) => {
+    try {
+        const types = await Service.find().distinct('type.name');
+        return res.status(200).send({
+            count: types.length,
+            data: types
+        });
+
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ message: error.message });
+    }
+});
+
+//route to get all cities in services
+router.get('/cities', async (req, res) => {
+    try {
+        const cities = await Service.find().distinct('city');
+        return res.status(200).send({
+            count: cities.length,
+            data: cities
+        });
+
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ message: error.message });
+    }
+});
+
+//route to get service by userID
+router.get('/user', authentication, authorization(['provider']), async (req, res) => {
+    try {
+        const services = await Service.find({ userID: req.user.id });
+        return res.status(200).send({
+            count: services.length,
+            data: services
+        });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ message: error.message })
     }
 });
 
 //route to get a service by id
-router.get('/:id', async (req, res) => {
+router.get('/:id', authentication, authorization(['admin', 'planner', 'provider']), async (req, res) => {
     try {
-        const {id} = req.params;
-        const service = await Service.findById(id);
-        if(service) {
+        const { id } = req.params;
+        const service = await Service.findById(id).populate('userID', 'firstName lastName');
+        if (service) {
             return res.status(200).send(service);
         }
-        return res.status(404).send({message: 'Service not found'});
+        return res.status(404).send({ message: 'Service not found' });
 
     } catch (error) {
         console.log(error.message);
-        res.status(500).send({message: error.message});
+        res.status(500).send({ message: error.message });
     }
 });
 
-//route to update a user by id
-router.put('/:id', async (req, res) => {
-    try{
-        if(
-            !req.body._id ||
-            !req.body.userID ||
-            !req.body.categoryID ||
-            !req.body.description ||
-            !req.body.package_title ||
-            !req.body.price
-        ) {
-            return res.status(400).send({message: 'All fields are required'});
-        }
-        const {id} = req.params;
-        const result = await Service.findByIdAndUpdate(id, req.body);
-
-        if(!result){
-            return res.status(404).send({message: 'Service not found'});
-        }
-        return res.status(200).send({message: 'Service updated successfully'});
-
-    }catch(error) {
-        console.log(error.message);
-        res.status(500).send({message: error.message});
-    }
-});
-
-//route to delete a book by id
-router.delete('/:id', async (req, res) => {
+//route to update a service by id
+router.put('/:id', authentication, authorization(['provider']), upload.array('images', 5), async (req, res) => {
     try {
-        const {id} = req.params;
-        const result = await Service.findByIdAndDelete(id);
+        const { userID, categoryID, categoryName, typeID, typeName, description, title, email, mobile, phone, city, price, prevImages, removedPrevImages } = req.body;
 
-        if(!result){
-            return res.status(404).send({message: 'Service not found'});
-        } 
-        return res.status(200).send({message: 'Service deleted successfully'});
-        
+        if (!userID || !categoryID || !description || !title || !typeID || !price) {
+            return res.status(400).send({ message: 'All fields are required' });
+        }
+
+        // Handling image files
+        let images = [...prevImages]; // Copy previous images array
+        if (req.files && req.files.length > 0) {
+            images = [...images, ...req.files.map(file => file.path)]; // Store file paths in images array
+        }
+
+        const { id } = req.params;
+        const service = {
+            userID,
+            category: {
+                _id: categoryID,
+                name: categoryName
+            },
+            type: {
+                _id: typeID,
+                name: typeName
+            },
+            description,
+            title,
+            email,
+            mobile,
+            phone,
+            city,
+            price,
+            images // Storing image file paths in the service document
+        };
+
+        const updatedService = await Service.findByIdAndUpdate(id, service, { new: true });
+
+        if (!updatedService) {
+            return res.status(404).send({ message: 'Service not found' });
+        }
+        // Remove images from uploads folder
+        if (removedPrevImages && removedPrevImages.length > 0) {
+            const pardir = resolve(__dirname, '..');
+            const promises = removedPrevImages.map(image => {
+                const filePath = join(pardir, image);
+                return new Promise((resolve, reject) => {
+                    fs.unlink(filePath, (err) => {
+                        if (err) {
+                            console.error(err);
+                            reject(err);
+                        } else {
+                            resolve();
+                        }
+                    });
+                });
+            });
+
+            await Promise.all(promises).catch((err) => {
+                console.error('Error deleting images:', err);
+            });
+        }
+
+        return res.status(200).send({ message: 'Service updated successfully', data: updatedService });
+
     } catch (error) {
         console.log(error.message);
-        res.status(500).send({message: error.message});
+        res.status(500).send({ message: error.message });
     }
 });
+
+//route to delete a service by id and remove it from all lists
+router.delete('/:id', authentication, authorization(['admin', 'provider']), async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedService = await Service.findByIdAndDelete(id);
+
+        if (!deletedService) {
+            return res.status(404).send({ message: 'Service not found' });
+        }
+
+        // Remove the service from all lists in users
+        await User.updateMany(
+            { 'lists.services': id },
+            { $pull: { 'lists.$[].services': id } } // Pull the service ID from all lists
+        );
+
+        // Remove reviews of the service
+        await Review.deleteMany({ serviceID: id });
+
+        // Remove images in uploads folder
+        const promises = deletedService.images.map(image => {
+            const pardir = resolve(__dirname, '..');
+            const filePath = join(pardir, image);
+            return new Promise((resolve, reject) => {
+                fs.unlink(filePath, (err) => {
+                    if (err) {
+                        console.error(err);
+                        reject(err);
+                    } else {
+                        resolve();
+                    }
+                });
+            });
+        });
+
+        await Promise.all(promises).catch((err) => {
+            console.error('Error deleting images:', err);
+        });
+
+        return res.status(200).send({ message: 'Service deleted successfully' });
+
+    } catch (error) {
+        console.error(error.message);
+        return res.status(500).send({ message: error.message });
+    }
+});
+
 
 export default router;

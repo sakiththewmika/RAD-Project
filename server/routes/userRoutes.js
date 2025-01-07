@@ -1,9 +1,12 @@
 import express from 'express';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import { join, dirname, resolve } from 'path';
 import multer from 'multer';
+import fs from 'fs';
 import User from '../models/userModel.js';
-import auth from '../middleware/auth.js';
+import Review from '../models/reviewModel.js';
+import Service from '../models/serviceModel.js';
+import { authentication, authorization } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -40,17 +43,31 @@ const upload = multer({
 router.use('/uploads', express.static(`${__dirname}/uploads`));
 
 // Route to register a new user
+//post - create
+//await - waits db response , async - 
+
 router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     try {
         const { firstName, lastName, email, password, mobile, role } = req.body;
+        var lists = req.body.lists;
 
-        if (!firstName || !lastName || !email || !password || !mobile || !role) {
+        if (!firstName || !lastName || !email || !password || !role) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({ email, role });
         if (existingUser) {
-            return res.status(409).json({ message: 'User already exists' });
+            return res.status(409).json({ message: 'User with this email and role already exists' });
+        }
+
+
+        if (role === 'planner' && (!lists || lists.length === 0)) {
+            lists = [
+                {
+                    name: 'Favorites',
+                    items: []
+                }
+            ];
         }
 
         const newUser = new User({
@@ -60,7 +77,9 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
             password,
             mobile,
             role,
-            profilePhoto: req.file ? req.file.path : null // Save file path if uploaded
+            lists,
+            profilePhoto: req.file ? req.file.path : "uploads/Profile.png" // Save file path if uploaded
+
         });
 
         await newUser.save();
@@ -73,7 +92,8 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
 });
 
 // Route to get all users
-router.get('/', async (req, res) => {
+//get - search/select
+router.get('/', authentication, authorization(['admin']), async (req, res) => {
     try {
         const users = await User.find();
         res.status(200).json({
@@ -87,7 +107,7 @@ router.get('/', async (req, res) => {
 });
 
 // Route to get user details for profile
-router.get('/profile', auth, async (req, res) => {
+router.get('/profile', authentication, authorization(['admin', 'planner', 'provider']), async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
         if (!user) {
@@ -98,7 +118,6 @@ router.get('/profile', auth, async (req, res) => {
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,
-            mobile: user.mobile,
             role: user.role,
             profilePhoto: user.profilePhoto
         });
@@ -107,64 +126,101 @@ router.get('/profile', auth, async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
-
-//route to get a user by id
-router.get('/:id', async (req, res) => {
+//Authentication before accessing all routes
+//route to update a user by id
+//put - update
+router.put('/', authentication, authorization(['planner', 'provider', 'admin']), upload.single('profilePhoto'), async (req, res) => {
     try {
-        const {id} = req.params;
-        const user = await User.findById(id);
-        if(user) {
-            return res.status(200).send(user);
+        if (
+            !req.body.firstName ||
+            !req.body.lastName ||
+            !req.body.email
+        ) {
+            return res.status(400).send({ message: 'All fields are required' });
         }
-        return res.status(404).send({message: 'User not found'});
+        let email = req.body.email;
+        if (await User.findOne({ email: req.body.email, role: req.user.role })) {
+            email = req.user.email;
+        }
+        const edituser = {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: email,
+            profilePhoto: req.file ? req.file.path : req.user.profilePhoto
+        };
+        //db update & stores previous data in result
+        const result = await User.findByIdAndUpdate(req.user.id, edituser);
+
+        if (!result) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+        return res.status(200).send({ message: 'User updated successfully' });
 
     } catch (error) {
         console.log(error.message);
-        res.status(500).send({message: error.message});
+        res.status(500).send({ message: error.message });
     }
 });
 
-//route to update a user by id
-router.put('/:id', async (req, res) => {
-    try{
-        if(
-            !req.body.firstName ||
-            !req.body.lastName ||
-            !req.body.email ||
-            !req.body.password ||
-            !req.body.mobile ||
-            !req.body.role
-        ) {
-            return res.status(400).send({message: 'All fields are required'});
-        }
-        const {id} = req.params;
-        const result = await User.findByIdAndUpdate(id, req.body);
+//route to update user password by id
 
-        if(!result){
-            return res.status(404).send({message: 'User not found'});
-        }
-        return res.status(200).send({message: 'User updated successfully'});
+router.put('/password', authentication, authorization(['planner', 'provider', 'admin']), async (req, res) => {
+    try {
+        const { password } = req.body;
 
-    }catch(error) {
+        if (!password) {
+            return res.status(400).send({ message: 'Password is required' });
+        }
+        // Find the user by id
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+        // Set the new password and save the user (triggers pre-save middleware)
+        user.password = password;
+        await user.save();
+
+        return res.status(200).send({ message: 'Password updated successfully' });
+
+    } catch (error) {
         console.log(error.message);
-        res.status(500).send({message: error.message});
+        res.status(500).send({ message: error.message });
     }
 });
 
 //route to delete a user by id
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authentication, authorization(['admin', 'planner', 'provider']), async (req, res) => {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
         const result = await User.findByIdAndDelete(id);
+        if (!result) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+        if (result.role === 'provider') {
+            // Delete all services by the user
+            await Service.deleteMany({ userID: id });
+        }
+        if (result.role === 'planner') {
+            // Delete all reviews by the user
+            await Review.deleteMany({ plannerID: id });
+        }
+        // Delete profile photo
+        if (result.profilePhoto !== 'uploads/Profile.png') {
+                const pardir = resolve(__dirname, '..');
+                const filePath = join(pardir, result.profilePhoto);
+                fs.unlink(filePath, (err) => {
+                    if (err) {
+                        console.error(err);
+                    } 
+                });
+        }
 
-        if(!result){
-            return res.status(404).send({message: 'User not found'});
-        } 
-        return res.status(200).send({message: 'User deleted successfully'});
-        
+        return res.status(200).send({ message: 'User deleted successfully' });
+
     } catch (error) {
         console.log(error.message);
-        res.status(500).send({message: error.message});
+        res.status(500).send({ message: error.message });
     }
 });
 
